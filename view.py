@@ -1,6 +1,6 @@
 # interface 
 
-##--Customer Login Page--#------------------------------------------------------
+-------------------------------------------------##--Customer Login Page--#------------------------------------------------------
 def customerLogin(username, password):
   # check against customer database that it exists and matches
 
@@ -9,7 +9,7 @@ def customerLogin(username, password):
   
  # we will use this customerId as global variable to be used later as our parameter values
 
-##--Customer Registration Page--#-----------------------------------------------
+-------------------------------------------------##--Customer Registration Page--#-----------------------------------------------
 def registerCustomer(email, password, name, address, phoneNo, gender):
   # validation checks
   # - email must not exist in database
@@ -17,7 +17,7 @@ def registerCustomer(email, password, name, address, phoneNo, gender):
   # return generated customerId
   # -1 means unsuccessful login
     
-##--Product Search Page--#-----------------------------------------------------
+-------------------------------------------------##--Product Search Page--#-----------------------------------------------------
 def customerSearch(selection):
   # selection comes in the form of a dictionary
   #{ "model": "safe1", "category": "locks",  "colour": "white", "productionYear": "2011", "factory": "Singapore", "powerSupply": "Battery"}
@@ -49,13 +49,13 @@ def purchase(itemId, customerId, date):
 
   # return true if successful, false otherwise (in any case where there are two customers viewing a product, one bought alr but not enough time to update in the product page and hence, the 2nd customer click yeet)
 
-##--Purchase History Page--#-----------------------------------------------
+-------------------------------------------------##--Purchase History Page--#-----------------------------------------------
 def getPurchaseHistory(customerId):
    # return all products bought by customer in the form of an array, consisting of item objects sorted base on purchase date (latest at the top)
 
   # item object should have itemid, price, model name, category, production year, colour, factory, powersupply, purchaseDate 
 
-##--Request Service Page--#-----------------------------------------------
+-------------------------------------------------##--Request Service Page--#-----------------------------------------------
 def getUnrequestedItems(customerId):
   # return all products bought by customer which DOES NOT HAVE A SERVICE REQUESTED OR HAD A MOST RECENT REQUEST WITH REQUEST STATUS AS CANCELLED OR COMPLETED in the form of an array, consisting of item objects 
 
@@ -67,7 +67,7 @@ def submitRequest(itemId):
   # change request status, generate service if under warranty
   # no need to return anything
 
-##--List of Requests Page--#-----------------------------------------------
+-------------------------------------------------##--List of Requests Page--#-----------------------------------------------
 def retrieveRequests(customerId):
   # return all products with A REQUEST in the form of an array, consisting of requests objects
 
@@ -82,13 +82,13 @@ def onPay(itemId):
 def onCancelRequest(itemId):
   # change request staus to cancelled 
 
-##--Admin Login Page--#-----------------------------------------------
+-------------------------------------------------##--Admin Login Page--#-----------------------------------------------
 
 def adminLogin(username, password):
   # check against admin database that it exists and matches
   # return True
  
-##--Admin Menu Page--#-----------------------------------------------
+-------------------------------------------------##--Admin Menu Page--#-----------------------------------------------
 
 def initialiseDatabase():
   # button does the populating of the database according to the PDF requirements (UNSOLD and SOLD items for each ProductID)
@@ -102,7 +102,7 @@ def viewInventory():
   
   # for front end side: it will display the table just like the PDF
 
-##--Product Catalogue Page --#-----------------------------------------------
+-------------------------------------------------##--Product Catalogue Page --#-----------------------------------------------
 
 def adminSearch(selection):
   # selection comes in the form of a dictionary
@@ -116,7 +116,7 @@ def adminSearch(selection):
   
   # BECAUSE we follow the design sent into the group drawn by hongpei sent by megan 
 
-##--View Service List Page--#-----------------------------------------------
+-------------------------------------------------##--View Service List Page--#-----------------------------------------------
 
 def requestServices():
   # display all past service sorted based on service status (awaiting approval on top, in progress in the middle, completed at the bottom), then sorted by service id (decreasing order, largest which is the latest service is on top)
@@ -129,7 +129,7 @@ def approveServiceRequest(serviceId):
 def completeServiceRequest(serviceId):
    # clicking completed checkbox will update service status to be completed.
 
-##--View Requests (Unpaid Service Fee)--#--------------------------------------
+-------------------------------------------------##--View Requests (Unpaid Service Fee)--#--------------------------------------
 def getUnpaidServiceCustomers():
   # not including customers whose requests have been cancelled due to non-payment
 
