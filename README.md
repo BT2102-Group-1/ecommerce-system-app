@@ -2,7 +2,7 @@
 BT2102 Group 1
 
 ## General
-[X] MySQL connection
+- [X] MySQL connection
 
 ## Features
 ### Frontend
