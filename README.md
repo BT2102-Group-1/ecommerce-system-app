@@ -20,7 +20,7 @@ BT2102 Group 1
 - [ ] Request service
 - [ ] View list of unpaid service customers
 - [ ] Initialise database
-- [X] View inventory
+- [ ] View inventory
 - [ ] Change request status after payment
 - [ ] Submit request
 - [ ] Purchase item
