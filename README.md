@@ -26,10 +26,10 @@ BT2102 Group 1
 - [ ] Purchase item
 
 ### Backend
-- [ ] Customer login
-- [ ] Register customer
+- [X] Customer login
+- [X] Register customer
 - [ ] Customer search (Mongo)
-- [ ] Admin login
+- [X] Admin login
 - [ ] Approve service request
 - [ ] Complete service request
 - [ ] Change request status after cancellation
@@ -37,7 +37,7 @@ BT2102 Group 1
 - [ ] View purcahse history
 - [ ] View unrequested items
 - [ ] Admin search
-- [ ] Request service
+- [X] Request service
 - [ ] View list of unpaid service customers
 - [ ] Initialise database
 - [X] View inventory
