@@ -48,7 +48,7 @@ class Connection:
         newCustomer = pd.DataFrame(np.array([[name, gender, address, email, password, phoneNo]]), columns=[
                                 'name', 'gender', 'address', 'email', 'password', 'phoneNo'])
         newCustomer.to_sql('Customer', self.connection, if_exists='append',
-                        index_label='customerId')  # write “newCustomer” to database
+                        index_label='customerId')  # write 'newCustomer' to database
 
         newCustomerId = pd.read_sql_query(
             'SELECT customerId FROM Customer WHERE email = "%s"' % email, self.connection)
@@ -251,7 +251,7 @@ class Connection:
             '''SELECT table1.iid AS 'ProductID', table1.sold AS 'Number of "SOLD" items', table2.unsold AS 'Number of "UNSOLD" items'
             FROM (SELECT productId AS iid, COUNT(productId) AS sold FROM Item WHERE purchaseStatus='Sold' GROUP BY productId) AS table1
             INNER JOIN (SELECT productId AS iid, COUNT(productId) AS unsold FROM Item WHERE purchaseStatus='Unsold' GROUP BY productId) AS table2
-            ON table1.iid = table2.iid;''')
+            ON table1.iid = table2.iid;''', self.connection)
     
     # -------------------------------------------------##--Product Catalogue Page --#-----------------------------------------------
 
@@ -315,9 +315,11 @@ class Connection:
 if __name__ == '__main__':
     db = Connection()
     print(db.engine)
+    print(db.initialiseDatabase())
+    print(db.viewInventory())
     # print(pd.read_sql('customer', db.connection))
     # print(pd.read_sql_query('SELECT * FROM Customer WHERE gender = "F"', db.connection))
 
     # insert = pd.DataFrame(np.array([['Lyn Tan', 'F', '123 Tiong Bahru Rd', 'hihi@jeno.com', 'cpassword', '92969405']]), columns=['name', 'gender', 'address', 'email', 'password', 'phoneNo'])
-    # insert.to_sql('customer', db.connection, if_exists='append', index_label='customerId') # write “customers” to database
+    # insert.to_sql('customer', db.connection, if_exists='append', index_label='customerId') # write 'customers' to database
     # print(pd.read_sql('customer', db.connection))
