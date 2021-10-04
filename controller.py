@@ -190,6 +190,8 @@ def initialiseDatabase():
         iQuery = [
             "INSERT INTO Item(itemId, powerSupply, factory, color, productionYear, purchaseStatus, productId, customerId, purchaseDate)"]
 
+        # Change item to have null CustomerId when adding in
+
         for item in items_json:
             iQuery.append(
                 "(%s, '%s', '%s', '%s', %s, '%s', %s, %s, '%s')"
