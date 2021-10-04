@@ -76,14 +76,24 @@ def settlePurchase():
   itemId = # get from front end side
   date = # get from front end side
   if not purchase(itemId, customerId, date):
+    pass
     # throw error on frontend
   
   # take note of refresh (frontend)
 
-def purchase(itemId, customerId, date):
-  # edit attributes of the item in the database - change unsold to sold and input customerId, record purchase date (impt for servicing later)
-
-  # return true if successful, false otherwise (in any case where there are two customers viewing a product, one bought alr but not enough time to update in the product page and hence, the 2nd customer click yeet)
+#input: int, int
+def purchase(itemId, customerId):
+    # edit attributes of the item in the database - change unsold to sold and input customerId, record purchase date (impt for servicing later)
+    #check if item is sold
+    item_df = pd.read_sql_query('''SELECT i.itemId FROM Item i WHERE i.itemId = "%d" AND i.purchaseStatus = "Unsold"''' % (itemId))
+    if not item_df.empty:
+        pd.read_sql_query('''   UPDATE Item i
+                                SET i.purchaseStatus = "Sold", i.customerId = "%d", i.purchaseDate = CURDATE()
+                                WHERE i.itemId = "%d" AND i.purchaseStatus != "Sold"''' % (itemId, customerId), db.connection)
+        return True
+    else:
+        return False
+    # return true if successful, false otherwise (in any case where there are two customers viewing a product, one bought alr but not enough time to update in the product page and hence, the 2nd customer click yeet)
 
 # -------------------------------------------------##--Purchase History Page--#-----------------------------------------------
 def getPurchaseHistory(customerId):
@@ -99,18 +109,50 @@ def getUnrequestedItems(customerId):
 
   # item object should have itemid, model name, purchaseDate, serviceFee, warranty (you can give us extra attributes if it is more convenient for your implementation) -- possible to give us warranty end date? 
 
-def submitRequest(itemId):
-  # change request status, generate service if under warranty
-  # no need to return anything
+def submitRequest(customerId, itemId):
+    # change request status, generate service if under warranty
+    # no need to return anything
+
+    requestStatus = "Submitted"
+    
+    item_df = pd.read_sql_query(''' SELECT i.purchaseDate, m.modelCost, m.modelWarranty, r.requestId
+                                    FROM Item i
+                                    INNER JOIN Model m ON i.productId = m.productId
+                                    INNER JOIN Request r ON i.itemId = r.itemId
+                                    WHERE i.itemId = "(%d)" 
+                                    ''' % (itemId), 
+                                    db.connection, 
+                                    parse_dates=['purchaseDate']) 
+    #if warranty has expired, create payment
+    if (datetime.now() + timedelta(months=item_df["modelWarranty"])) > item_df["purchaseDate"]:
+        requestId = item_df["requestId"]
+        serviceFee = 40.00 + 0.2 * item_df["modelCost"]
+        pd.read_sql_query('''   INSERT INTO Payment (requestId, serviceFee, paymentDate)
+                                VALUES (%s, %s, CURDATE())''' 
+                                % (requestId, '{0:.2f}'.format(serviceFee)), 
+                                db.connection)
+        requestStatus = "Submitted and Waiting for payment"
+    ##generate request
+    pd.read_sql_query('''   INSERT INTO REQUEST (requestDate, requestStatus, customerId, itemId)
+                            VALUES (CURDATE(), %s, %d, %d)''' 
+                            % (requestStatus, customerId, itemId),
+                            db.connection)
+    #generate service
+    pd.read_sql_query('''   INSERT INTO Service(serviceStatus, adminId, requestId)
+                            VALUES ("Waiting for approval", NULL, (SELECT requestId FROM Request WHERE itemId = "%d"))''' % (itemId), 
+                            db.connection)
 
 # -------------------------------------------------##--List of Requests Page--#-----------------------------------------------
 def retrieveRequests(customerId):
-  # return all products with A REQUEST in the form of an array, consisting of requests objects
-
-  # requests object should have requestsid, request date, service fee, request status, itemid
-
-  # return array should be sorted by request status (cancelled at the bottom, completed at the middle, rest at the top) then by request date
-
+    # return all products with A REQUEST in the form of an array, consisting of requests objects
+    return pd.read_sql_query(''' SELECT r.requestId, r.requestDate, p.serviceFee, r.requestStatus, r.itemId FROM Request r LEFT JOIN Payment p ON r.requestId = p.requestId WHERE r.customerId = "%d" ORDER BY FIELD(r.requestStatus, 
+                                        "Submitted", 
+                                        "Submitted and Waiting for payment",
+                                        "In progress",
+                                        "Approved",
+                                        "Completed", 
+                                        "Cancelled"''' % (customerId), 
+                                        db.connection)
 
 def onPay(itemId):
   # changes request status, generates a service 
@@ -166,17 +208,28 @@ def requestServices(self):
     return pd.read_sql_query('''SELECT s.serviceId, r.itemId, r.customerId, s.serviceStatus FROM Service AS s INNER JOIN Request AS r ON s.requestId = r.requestId
                                     ORDER BY FIELD(s.serviceStatus,'Waiting for approval', 'In progress', 'Completed'), s.serviceId DESC''', self.connection)
 
-def approveServiceRequest(serviceId):
-   # clicking approved checkbox will update service status to be in progress.
+#input: int, int
+def approveServiceRequest(adminId, serviceId):
+    # clicking approved checkbox will update service status to be in progress.
+    # void function that updates serviceStatus of Service  to "In progress"
+    #update request
+    pd.read_sql_query('UPDATE Request r INNER JOIN Service s ON r.requestId = s.requestId SET r.requestStatus = "Approved" WHERE s.serviceId = "%d"' % (serviceId), db.connection)
+    #update service
+    return pd.read_sql_query('UPDATE Service SET serviceStatus = "In progress", adminId = "%d" WHERE serviceId = "%d"' % (adminId, serviceId), db.connection)
   
 def completeServiceRequest(serviceId):
-   # clicking completed checkbox will update service status to be completed.
+    # clicking completed checkbox will update service status to be completed.
+    #update request
+    pd.read_sql_query('''   UPDATE Request r
+                            INNER JOIN Service s ON r.requestId = s.requestId
+                            SET r.requestStatus = "Completed"
+                            WHERE s.serviceId = "%d"''' % (serviceId))
+    #update service
+    return pd.read_sql_query('UPDATE Service SET serviceStatus = "Completed" WHERE serviceId = "%s"' % (serviceId), db.connection)
 
 # -------------------------------------------------##--View Requests (Unpaid Service Fee)--#--------------------------------------
 # not including customers whose requests have been cancelled due to non-payment
 # include customers whose request status is "submitted and waiting for payment"
 # Return a dataframe of requests which have columns requestId, requestDate, requestStatus, customerId, itemId
 def getUnpaidServiceCustomers(self):
-  
   return pd.read_sql_query('SELECT requestId, requestDate, requestStatus, customerId, itemId FROM oshes.Request WHERE requestStatus = "Submitted and Waiting for payment"', self.connection)
-  
