@@ -94,8 +94,8 @@ def getPurchaseHistory(customerId):
     # item object should have itemid, price, model name, category, production year, colour, factory, powersupply, purchaseDate
 
     items_df = pd.read_sql_query(
-        "SELECT itemId, price, modelName, category, productionYear, colour, factory, powerSupply, purchaseDate " +
-        "FROM Item WHERE customerId = %d ORDER BY purchaseDate DESC" % customerId, db.connection)
+        '''SELECT itemId, modelPrice, modelName, categoryName, productionYear, color, factory, powerSupply, purchaseDate
+        FROM Item LEFT JOIN Model USING (productId) WHERE customerId = 1 ORDER BY purchaseDate DESC''' % customerId, db.connection)
     items = [Item(itemId, price, modelName, category, productionYear, colour, factory, powerSupply, purchaseDate)
              for itemId, price, modelName, category, productionYear, colour, factory, powerSupply, purchaseDate in items_df.iterrows()]
 
@@ -171,11 +171,6 @@ def adminLogin(username, password):
     # return True
 
     # -------------------------------------------------##--Admin Menu Page--#-----------------------------------------------
-
-
-{"Category": "Lights", "Cost ($)": 20, "Model": "Light1",
- "Price ($)": 50, "ProductID": 1, "Warranty (months)": 10}
-
 
 def initialiseDatabase():
     try:
