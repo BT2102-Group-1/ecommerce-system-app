@@ -75,31 +75,12 @@ def purchase(itemId, customerId, date):
 
 # -------------------------------------------------##--Purchase History Page--#-----------------------------------------------
 
-
-class Item:
-    def __init__(self, itemId, price, modelName, category, productionYear, colour, factory, powerSupply, purchaseDate):
-        self.itemId = itemId
-        self.price = price
-        self.modelName = modelName
-        self.category = category
-        self.productionYear = productionYear
-        self.colour = colour
-        self.factory = factory
-        self.powerSupply = powerSupply
-        self.purchaseDate = purchaseDate
-
-
 def getPurchaseHistory(customerId):
     # return all products bought by customer in the form of an array, consisting of item objects sorted base on purchase date (latest at the top)
     # item object should have itemid, price, model name, category, production year, colour, factory, powersupply, purchaseDate
 
-    items_df = pd.read_sql_query(
-        '''SELECT itemId, modelPrice, modelName, categoryName, productionYear, color, factory, powerSupply, purchaseDate
-        FROM Item LEFT JOIN Model USING (productId) WHERE customerId = 1 ORDER BY purchaseDate DESC''' % customerId, db.connection)
-    items = [Item(itemId, price, modelName, category, productionYear, colour, factory, powerSupply, purchaseDate)
-             for itemId, price, modelName, category, productionYear, colour, factory, powerSupply, purchaseDate in items_df.iterrows()]
-
-    return items
+    return pd.read_sql_query('''SELECT itemId, modelPrice, modelName, categoryName, productionYear, color, factory, powerSupply, purchaseDate 
+                                FROM Item LEFT JOIN Model USING (productId) WHERE customerId = 1 ORDER BY purchaseDate DESC''' % customerId, db.connection)
 
 # -------------------------------------------------##--Request Service Page--#-----------------------------------------------
 
@@ -109,17 +90,10 @@ def getUnrequestedItems(customerId):
     # suggested METHOD: find items purchased then query requests based on the itemId -> just shows the requests for that itemId, since requestId will be incremented in increasing order, can get the largest requestId and check status
     # item object should have itemid, model name, purchaseDate, serviceFee, warranty (you can give us extra attributes if it is more convenient for your implementation) -- possible to give us warranty end date?
 
-    items_df = pd.read_sql_query(
-        "SELECT itemId, modelName, modelCost, modelWarranty, purchaseDate, DATE_ADD(purchaseDate, INTERVAL modelWarranty MONTH) warrantyDate " +
-        "FROM Item LEFT JOIN Model USING (productId) LEFT JOIN  Request USING (itemId) " +
-        "WHERE customerId = %d " +
-        "ORDER BY purchaseDate DESC"
-        % customerId,
-        db.connection)
-    items = [tbd for tbd in items_df.iterrows()]
-
-    return items
-
+    return pd.read_sql_query(
+        '''SELECT itemId, modelName, modelCost, modelWarranty, purchaseDate, DATE_ADD(purchaseDate, INTERVAL modelWarranty MONTH) warrantyDate 
+        FROM Item LEFT JOIN Model USING (productId) LEFT JOIN  Request USING (itemId) 
+        WHERE customerId = %d ORDER BY purchaseDate DESC''' % customerId, db.connection)
 
 def submitRequest(itemId):
     return
@@ -140,12 +114,12 @@ def retrieveRequests(customerId):
 
 def onPay(requestId): # changed from itemId to requestId
     pd.read_sql_query(
-        "UPDATE REQUEST SET requestStatus = 'In progress' WHERE requestId = %s AND requestStatus = 'Submitted and Waiting for payment'"
+        '''UPDATE REQUEST SET requestStatus = 'In progress' WHERE requestId = %s AND requestStatus = 'Submitted and Waiting for payment' '''
         % requestId,
         db.connection
     )
     pd.read_sql_query(
-        "UPDATE Payment SET paymentDate = CURDATE() WHERE requestId = %s"
+        '''UPDATE Payment SET paymentDate = CURDATE() WHERE requestId = %s'''
         % requestId,
         db.connection
     )
@@ -155,7 +129,7 @@ def onPay(requestId): # changed from itemId to requestId
 
 def onCancelRequest(itemId):
     return pd.read_sql_query(
-        "UPDATE Request SET requestStatus = 'Canceled' WHERE itemId = %d"
+        '''UPDATE Request SET requestStatus = 'Canceled' WHERE itemId = %d'''
         % itemId,
         db.connection)
 
