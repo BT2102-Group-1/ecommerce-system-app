@@ -194,11 +194,11 @@ class Connection:
         return
 
 
-    def onCancelRequest(self, itemId):
+    def onCancelRequest(self, requestId):
         # change request staus to cancelled
         self.connection.execute(
-            '''UPDATE Request SET requestStatus = 'Canceled' WHERE itemId = %d'''
-            % itemId)
+            '''UPDATE Request SET requestStatus = 'Canceled' WHERE requestId = %d'''
+            % requestId)
 
 
     # -------------------------------------------------##--Admin Login Page--#-----------------------------------------------
