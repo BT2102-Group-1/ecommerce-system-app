@@ -38,7 +38,7 @@ CREATE TABLE Item(
     productionYear	YEAR					NOT NULL,
     purchaseStatus	ENUM('Unsold', 'Sold') 	NOT NULL DEFAULT 'Unsold',
     productId 		BIGINT		 			NOT NULL,
-    customerId 		BIGINT	 				NOT NULL,
+    customerId 		BIGINT,
 	purchaseDate	DATE,
     PRIMARY KEY (itemId),
     FOREIGN KEY (productId) references Model(productId),
@@ -59,7 +59,7 @@ CREATE TABLE Request(
 CREATE TABLE Service(
     serviceId		BIGINT	 		NOT NULL AUTO_INCREMENT,
 	serviceStatus 	ENUM('Waiting for approval', 'In progress', 'Completed') NOT NULL,
-	adminId			BIGINT	 		NOT NULL,
+	adminId			BIGINT,
     requestId		BIGINT 			NOT NULL,
     PRIMARY KEY (serviceId),
 	FOREIGN KEY (adminId) references Administrator(adminId),

@@ -88,9 +88,9 @@ class Connection:
         item_df = pd.read_sql_query(
             '''SELECT i.itemId FROM Item i WHERE i.itemId = "%d" AND i.purchaseStatus = "Unsold"''' % (itemId))
         if not item_df.empty:
-            pd.read_sql_query('''   UPDATE Item i
+            self.connection.execute('''   UPDATE Item i
                                     SET i.purchaseStatus = "Sold", i.customerId = "%d", i.purchaseDate = CURDATE()
-                                    WHERE i.itemId = "%d" AND i.purchaseStatus != "Sold"''' % (itemId, customerId), self.connection)
+                                    WHERE i.itemId = "%d" AND i.purchaseStatus != "Sold"''' % (itemId, customerId))
             return True
         else:
             return False
@@ -137,20 +137,17 @@ class Connection:
         if (datetime.now() + timedelta(months=item_df["modelWarranty"])) > item_df["purchaseDate"]:
             requestId = item_df["requestId"]
             serviceFee = 40.00 + 0.2 * item_df["modelCost"]
-            pd.read_sql_query('''   INSERT INTO Payment (requestId, serviceFee, paymentDate)
+            self.connection.execute('''   INSERT INTO Payment (requestId, serviceFee, paymentDate)
                                     VALUES (%s, %s, CURDATE())'''
-                            % (requestId, '{0:.2f}'.format(serviceFee)),
-                            self.connection)
+                            % (requestId, '{0:.2f}'.format(serviceFee)))
             requestStatus = "Submitted and Waiting for payment"
         # generate request
-        pd.read_sql_query('''   INSERT INTO REQUEST (requestDate, requestStatus, customerId, itemId)
+        self.connection.execute('''   INSERT INTO REQUEST (requestDate, requestStatus, customerId, itemId)
                                 VALUES (CURDATE(), %s, %d, %d)'''
-                        % (requestStatus, customerId, itemId),
-                        self.connection)
+                        % (requestStatus, customerId, itemId))
         # generate service
-        pd.read_sql_query('''   INSERT INTO Service(serviceStatus, adminId, requestId)
-                                VALUES ("Waiting for approval", NULL, (SELECT requestId FROM Request WHERE itemId = "%d"))''' % (itemId),
-                        self.connection)
+        self.connection.execute('''   INSERT INTO Service(serviceStatus, adminId, requestId)
+                                VALUES ("Waiting for approval", NULL, (SELECT requestId FROM Request WHERE itemId = "%d"))''' % itemId)
 
     # -------------------------------------------------##--List of Requests Page--#-----------------------------------------------
 
@@ -169,25 +166,15 @@ class Connection:
 
     def onPay(self, requestId):  # changed from itemId to requestId
         # changes request status, generates a service
-        pd.read_sql_query(
-            '''UPDATE REQUEST SET requestStatus = 'In progress' WHERE requestId = %s AND requestStatus = 'Submitted and Waiting for payment' '''
-            % requestId,
-            self.connection
-        )
-        pd.read_sql_query(
-            '''UPDATE Payment SET paymentDate = CURDATE() WHERE requestId = %s'''
-            % requestId,
-            self.connection
-        )
+        self.connection.execute('''UPDATE REQUEST SET requestStatus = 'In progress' 
+                                WHERE requestId = %s AND requestStatus = 'Submitted and Waiting for payment' ''' % requestId)
+        self.connection.execute('''UPDATE Payment SET paymentDate = CURDATE() WHERE requestId = %s''' % requestId)
         return
 
 
     def onCancelRequest(self, itemId):
         # change request staus to cancelled
-        return pd.read_sql_query(
-            '''UPDATE Request SET requestStatus = 'Canceled' WHERE itemId = %d'''
-            % itemId,
-            self.connection)
+        self.connection.execute('''UPDATE Request SET requestStatus = 'Canceled' WHERE itemId = %d''' % itemId)
 
 
     # -------------------------------------------------##--Admin Login Page--#-----------------------------------------------
@@ -212,30 +199,41 @@ class Connection:
         # links to next method viewInventory() where view just does the display of this insertion
         try:
             products_json = json.load(open('data/products.json'))
-            pQuery = [
-                "INSERT INTO Model (categoryName, modelName, modelCost, modelPrice, modelWarranty) VALUES "]
+            pString = "INSERT INTO Model (categoryName, modelName, modelCost, modelPrice, modelWarranty) VALUES "
+            pQuery = []
+
+            map_to_productid = {}
 
             for product in products_json:
                 pQuery.append(
                     "('%s', '%s', %s, %s, %s)"
                     % (product["Category"], product["Model"], product["Cost ($)"], product["Price ($)"], product["Warranty (months)"])
                 )
+                map_to_productid[product["Category"]+product["Model"]] = product["ProductID"]
 
-            pd.read_sql_query(" ".join(pQuery), self.connection)
+            self.connection.execute(pString + ", ".join(pQuery))
 
             items_json = json.load(open('data/items.json'))
-            iQuery = [
-                "INSERT INTO Item(itemId, powerSupply, factory, color, productionYear, purchaseStatus, productId, customerId, purchaseDate)"]
+            iString = "INSERT INTO Item(itemId, powerSupply, factory, color, productionYear, purchaseStatus, productId, customerId, purchaseDate) VALUES "
+            iQuery = [] 
 
             # Change item to have null CustomerId when adding in
 
             for item in items_json:
-                iQuery.append(
-                    "(%s, '%s', '%s', '%s', %s, '%s', %s, %s, '%s')"
-                    % (item["ItemId"], item["PowerSupply"], item["Factory"], item["Color"], item["ProductionYear"], item["PurchaseStatus"], item["Model"], random.randint(1, 4), "CURDATE()")
-                )
+                productId = map_to_productid[item["Category"]+item["Model"]]
 
-            pd.read_sql_query(" ".join(iQuery), self.connection)
+                if item["PurchaseStatus"] == "Sold":
+                    iQuery.append(
+                        "(%s, '%s', '%s', '%s', %s, '%s', %s, %s, %s)"
+                        % (item["ItemID"], item["PowerSupply"], item["Factory"], item["Color"], item["ProductionYear"], item["PurchaseStatus"], productId, random.randint(1, 4), "CURDATE()")
+                    )
+                elif item["PurchaseStatus"] == "Unsold":
+                    iQuery.append(
+                        "(%s, '%s', '%s', '%s', %s, '%s', %s, %s, %s)"
+                        % (item["ItemID"], item["PowerSupply"], item["Factory"], item["Color"], item["ProductionYear"], item["PurchaseStatus"], productId, "NULL", "NULL")
+                    )
+
+            self.connection.execute(iString + ", ".join(iQuery))
 
             return True
 
@@ -286,21 +284,22 @@ class Connection:
         # clicking approved checkbox will update service status to be in progress.
         # void function that updates serviceStatus of Service  to "In progress"
         # update request
-        pd.read_sql_query('UPDATE Request r INNER JOIN Service s ON r.requestId = s.requestId SET r.requestStatus = "Approved" WHERE s.serviceId = "%d"' % (
-            serviceId), db.connection)
+        self.connection.execute('UPDATE Request r INNER JOIN Service s ON r.requestId = s.requestId SET r.requestStatus = "Approved" WHERE s.serviceId = "%d"' % serviceId)
         # update service
-        return pd.read_sql_query('UPDATE Service SET serviceStatus = "In progress", adminId = "%d" WHERE serviceId = "%d"' % (adminId, serviceId), self.connection)
+        self.connection.execute('UPDATE Service SET serviceStatus = "In progress", adminId = "%d" WHERE serviceId = "%d"' % (adminId, serviceId))
+        return
 
 
     def completeServiceRequest(self, serviceId):
         # clicking completed checkbox will update service status to be completed.
         # update request
-        pd.read_sql_query('''   UPDATE Request r
+        self.connection.execute('''   UPDATE Request r
                                 INNER JOIN Service s ON r.requestId = s.requestId
                                 SET r.requestStatus = "Completed"
-                                WHERE s.serviceId = "%d"''' % (serviceId))
+                                WHERE s.serviceId = "%d"''' % serviceId)
         # update service
-        return pd.read_sql_query('UPDATE Service SET serviceStatus = "Completed" WHERE serviceId = "%s"' % (serviceId), self.connection)
+        self.connection.execute('UPDATE Service SET serviceStatus = "Completed" WHERE serviceId = "%s"' % serviceId)
+        return
 
     # -------------------------------------------------##--View Requests (Unpaid Service Fee)--#--------------------------------------
     # not including customers whose requests have been cancelled due to non-payment
