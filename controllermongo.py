@@ -6,11 +6,7 @@ import numpy as np
 mongodb = MongoClient('localhost', 27017) # connect to mongoDB at localhost, port 27017
 
 db = mongodb.oshes # use "oshes" database
-# print(db)
-
 collection = db.Item
-# print(collection)
-
 
 # Takes in a selection in the form of a dictionary, e.g. { "model": "safe1", "category": "locks",  "color": "white", "productionYear": "2011", "factory": "Singapore", "powerSupply": "Battery"}
 # If user does not select any filter for the category, the value of the category will be an empty string, eg category: ""
@@ -50,14 +46,10 @@ def customerSearch(selection):
     results = list(cursor) # convert the documents object into a list
     df = pd.DataFrame(results)
     df.rename(columns={'_id': 'productName'}, inplace=True)
-    print(df) # debugging
 
-
-    # return should be like this
     # arr = [[productNameVar, price, # of items in stock, warranty, [list of items objects]],[[productNameVar, price, # of items in stock, warranty, [list of items objects]],[[productNameVar, price, # of items in stock, warranty, [list of items objects]] etc ...
-    # BECAUSE we follow the design sent into the group drawn by hongpei sent by megan
     return df
 
 # TESTING
-customerSearch({ "model": "", "category": "locks",  "color": "white", "productionYear": "2015", "factory": "", "powerSupply": "Battery"})
-customerSearch({ "model": "", "category": "",  "color": "", "productionYear": "", "factory": "", "powerSupply": ""})
+print(customerSearch({ "model": "", "category": "locks",  "color": "white", "productionYear": "2015", "factory": "", "powerSupply": "Battery"}))
+print(customerSearch({ "model": "", "category": "",  "color": "", "productionYear": "", "factory": "", "powerSupply": ""}))
