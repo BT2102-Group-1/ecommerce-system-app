@@ -41,7 +41,7 @@ def customerSearch(selection):
         }
       },
       {
-        "$sort": SON([("Model", 1)])
+        "$sort": SON([("_id", 1)])
       },
     ]
 
@@ -58,4 +58,6 @@ def customerSearch(selection):
     # BECAUSE we follow the design sent into the group drawn by hongpei sent by megan
     return df
 
+# TESTING
 customerSearch({ "model": "", "category": "locks",  "color": "white", "productionYear": "2015", "factory": "", "powerSupply": "Battery"})
+customerSearch({ "model": "", "category": "",  "color": "", "productionYear": "", "factory": "", "powerSupply": ""})
