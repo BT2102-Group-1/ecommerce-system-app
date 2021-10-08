@@ -210,16 +210,16 @@ class Connection:
         return
 
 
-    def onCancelRequest(self, itemId):
-        # change request staus to Canceled
+    def onCancelRequest(self, requestId):
+        # change request staus to cancelled
         self.connection.execute(
-            '''UPDATE Request SET requestStatus = 'Canceled' WHERE itemId = %d'''
-            % itemId)
+            '''UPDATE Request SET requestStatus = 'Canceled' WHERE requestId = %d'''
+            % requestId)
 
 
     # -------------------------------------------------##--Admin Login Page--#-----------------------------------------------
-    # Returns True if admin name exists and password matches
-    # Returns False otherwise (i.e. unsuccessful login)
+    # Returns adminId if admin name exists and password matches
+    # Returns -1 otherwise (i.e. unsuccessful login)
     def adminLogin(self, adminId, password):
         # check against admin database that it exists and matches
         result = pd.read_sql_query(
@@ -228,9 +228,9 @@ class Connection:
             self.connection)
 
         if (result.empty):
-            return False
+            return -1
 
-        return True
+        return result['adminId'][0]
 
     # -------------------------------------------------##--Admin Menu Page--#-----------------------------------------------
 

@@ -3,53 +3,179 @@ from bson.son import SON
 import pandas as pd
 import numpy as np
 
-mongodb = MongoClient('localhost', 27017) # connect to mongoDB at localhost, port 27017
+# connect to mongoDB at localhost, port 27017
+mongodb = MongoClient('localhost', 27017)
 
-db = mongodb.oshes # use "oshes" database
+db = mongodb.oshes  # use "oshes" database
 collection = db.Item
 
-# Takes in a selection in the form of a dictionary, e.g. { "model": "safe1", "category": "locks",  "color": "white", "productionYear": "2011", "factory": "Singapore", "powerSupply": "Battery"}
-# If user does not select any filter for the category, the value of the category will be an empty string, eg category: ""
-# Returns an array of UNSOLD items
-def customerSearch(selection): 
-    
+# Takes in a selection in the form of a dictionary, e.g. {'model': ["Light1", "Light2"], 'category': ["Lights"], 'Colours': ["Black", "Red", "Blue"], 'Factory': [], 'ProductionYear': [], 'PowerSupply: []}
+# If user does not select any filter for the category, the value of the category will be an empty array
+# Returns an dataframe of UNSOLD items (productId, model, category, price, number of items in stock, warranty, [list of items objects])
+
+# NOTE FOR BACKEND: Currently it's based on the old array input, where values are one single string
+# Incorrect array input: { "model": "safe1", "category": "locks",  "colour": "white", "productionYear": "2011", "factory": "Singapore", "powerSupply": "Battery"}
+
+
+def customerSearch(selection):
+
+    # Transform selection input into a MongoDB query dictionary
     queryDict = dict()
-    queryDict["PurchaseStatus"] = "Unsold" # find only Unsold items
+    queryDict["PurchaseStatus"] = "Unsold"  # find only Unsold items
     for (key, value) in selection.items():
-      if value != "":
+        if value != "":
 
-        if key == "productionYear":
-          queryDict[key[:1].upper() + key[1:]] = float(value) # Make key title case, no spaces
-        else:
-          queryDict[key[:1].upper() + key[1:]] = value[:1].upper() + value[1:] # Make value title case, no spaces (esp for Model)
+            if key == "productionYear":
+                # Make key title case, no spaces
+                queryDict[key[:1].upper() + key[1:]] = float(value)
+            else:
+                # Make value title case, no spaces (esp for Model)
+                queryDict[key[:1].upper() + key[1:]
+                          ] = value[:1].upper() + value[1:]
 
-    print(queryDict) # debugging
+    print(queryDict)  # debugging
 
+    # Perform MongoDB aggregation
     pipeline = [
-      { 
-        "$match": queryDict 
-      },
-      { 
-        "$group": {
-          "_id": "$Model", 
-          "numItemsInStock": {"$sum": 1}, 
-          "itemIDs": {"$push": "$ItemID"}
-        }
-      },
-      {
-        "$sort": SON([("_id", 1)])
-      },
+        {
+            "$lookup": {
+                "from": "Product",
+                "let": {"model": "$Model", "category": "$Category"},
+                "pipeline": [
+                    {"$match":
+                     {"$expr":
+                      {"$and":
+                       [
+                           {"$eq": ["$Model",  "$$model"]},
+                           {"$eq": ["$Category", "$$category"]}
+                       ]
+                       }
+                      }
+                     }
+                ],
+                "as": "Model"
+            }
+        },
+        # {
+        #   "$lookup": {
+        #       "from": "Product",
+        #       "localField": "Model",
+        #       "foreignField": "Model",
+        #       # "let": { <var_1>: <expression>, …, <var_n>: <expression> },
+        #       "pipeline": [ <pipeline to run> ],
+        #       "as": "Model",
+        #   }
+        # },
+        {
+            "$match": queryDict
+        },
+        {
+            "$group": {
+                "_id": "$Model.ProductID",
+                "model": {"$first": "$Model.Model"},
+                "category": {"$first": "$Model.Category"},
+                "price": {"$first": "$Model.Price"},
+                "numItemsInStock": {"$sum": 1},
+                "warranty": {"$first": "$Model.Warranty"},
+                "itemIDs": {"$push": "$ItemID"}
+            }
+        },
+        {
+            "$sort": SON([("model", 1)])
+        },
     ]
 
     cursor = collection.aggregate(pipeline)
-  
-    results = list(cursor) # convert the documents object into a list
-    df = pd.DataFrame(results)
-    df.rename(columns={'_id': 'productName'}, inplace=True)
 
-    # arr = [[productNameVar, price, # of items in stock, warranty, [list of items objects]],[[productNameVar, price, # of items in stock, warranty, [list of items objects]],[[productNameVar, price, # of items in stock, warranty, [list of items objects]] etc ...
+    results = list(cursor)  # convert the documents object into a list
+    df = pd.DataFrame(results)
+    df.rename(columns={'_id': 'productId'}, inplace=True)
+
+    # flatMap values that are in lists
+    columns = ['productId', 'model', 'category', 'price', 'warranty']
+    for column in columns:
+        df[column] = df[column].apply(lambda arr: arr[0])
+
     return df
 
+
 # TESTING
-print(customerSearch({ "model": "", "category": "locks",  "color": "white", "productionYear": "2015", "factory": "", "powerSupply": "Battery"}))
-print(customerSearch({ "model": "", "category": "",  "color": "", "productionYear": "", "factory": "", "powerSupply": ""}))
+print(customerSearch({"model": "", "category": "locks",  "color": "white",
+                      "productionYear": "2015", "factory": "", "powerSupply": "Battery"}))
+print(customerSearch({"model": "", "category": "",  "color": "",
+                      "productionYear": "", "factory": "", "powerSupply": ""}))
+
+
+def adminSearch(selection):
+    queryDict = {}
+    for (key, array) in selection.items():
+        if len(array) != 0:
+            queryDict[key.title()] = { # Make key and value title case, no spaces
+                "$in": 
+                    [float(value)
+                        if key == "productionYear" else value.title() for value in array
+                    ]
+                }
+
+    # Perform MongoDB aggregation
+    pipeline = [
+        {
+            "$lookup": {
+                "from": "Product",
+                "let": {"model": "$Model", "category": "$Category"},
+                "pipeline": [
+                    {"$match":
+                     {"$expr":
+                      {"$and":
+                       [
+                           {"$eq": ["$Model",  "$$model"]},
+                           {"$eq": ["$Category", "$$category"]}
+                       ]
+                       }
+                      }
+                     }
+                ],
+                "as": "Model"
+            }
+        },
+        {
+            "$match": queryDict
+        },
+        {
+            "$addFields": {
+                "Sold": {"$cond": [{"$eq": ["$PurchaseStatus","Sold"]}, 1, 0]},
+                "Unsold": {"$cond": [{"$eq": ["$PurchaseStatus","Unsold"]}, 1, 0]}
+            }
+        },
+        {
+            "$group": {
+                "_id": "$Model.ProductID",
+                "model": {"$first": "$Model.Model"},
+                "serviceFee": {"$first": { "$sum": [40, { "$multiply": [ "$Model.Cost", 0.2 ] }]}},
+                "category": {"$first": "$Model.Category"},
+                "price": {"$first": "$Model.Price"},
+                "numItemsInStock": {"$sum": "$Unsold"},
+                "numItemsSold": {"$sum": "$Sold"},
+                "warranty": {"$first": "$Model.Warranty"},
+                "itemIDs": {"$push": "$ItemID"}
+            }
+        },
+        {
+            "$sort": SON([("model", 1)])
+        },
+    ]
+
+    cursor = collection.aggregate(pipeline)
+
+    # add service fee here
+
+    results = list(cursor)  # convert the documents object into a list
+    df = pd.DataFrame(results)
+    df.rename(columns={'_id': 'productId'}, inplace=True)
+
+    # flatMap values that are in lists
+    columns = ['productId', 'model', 'category', 'price', 'warranty']
+    for column in columns:
+        df[column] = df[column].apply(lambda arr: arr[0])
+
+    return df
