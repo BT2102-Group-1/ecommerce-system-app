@@ -5,7 +5,6 @@ import json
 from datetime import datetime, timedelta
 
 from sqlalchemy import create_engine
-from sqlalchemy.sql import text
 
 
 class Connection:
@@ -92,15 +91,14 @@ class Connection:
             # edit attributes of the item in the database - change unsold to sold and input customerId, record purchase date (impt for servicing later)
             # check if item is sold
         item_df = pd.read_sql_query(
-            '''SELECT i.itemId FROM Item i WHERE i.itemId = "%d" AND i.purchaseStatus = "Unsold"'''
-            % itemId,
-            self.connection)
+            'SELECT i.itemId FROM Item i WHERE i.itemId = %d AND i.purchaseStatus = "Unsold"' 
+            % itemId, self.connection)
+        print(item_df)
         if not item_df.empty:
+            print(customerId)
             self.connection.execute(
-                '''   UPDATE Item i
-                SET i.purchaseStatus = "Sold", i.customerId = "%d", i.purchaseDate = CURDATE()
-                WHERE i.itemId = "%d" AND i.purchaseStatus != "Sold"'''
-                % (itemId, customerId))
+                'UPDATE Item i SET i.purchaseStatus = "Sold", i.customerId = %d, i.purchaseDate = CURDATE() WHERE i.itemId = %d'
+                % (customerId, itemId))
             return True
         else:
             return False
@@ -136,49 +134,67 @@ class Connection:
 
     def submitRequest(self, customerId, itemId):
         # change request status, generate service if under warranty
-        # no need to return anything
-
+        # requests can only be submitted if the item has been purchased by the customer previously, and there isn't an existing request
         requestStatus = "Submitted"
-
         item_df = pd.read_sql_query(
-            ''' SELECT i.purchaseDate, m.modelCost, m.modelWarranty, r.requestId
-            FROM Item i
-            INNER JOIN Model m ON i.productId = m.productId
-            INNER JOIN Request r ON i.itemId = r.itemId
-            WHERE i.itemId = "(%d)" 
-            '''
+            '''SELECT i.purchaseDate, i.customerId, m.modelCost, m.modelWarranty, r.requestStatus 
+            FROM Item i 
+            INNER JOIN Model m ON i.productId = m.productId 
+            LEFT JOIN Request r ON i.itemId = r.itemId 
+            WHERE i.itemId = %d'''
             % itemId,
             self.connection,
             parse_dates=['purchaseDate'])
+        request = item_df['requestStatus'][0]
+        noActiveRequest = (request is None) or request.__eq__("Canceled") or request.__eq__("Completed")
+        itemPurchased = (item_df['customerId'][0].__eq__(customerId)) and (not item_df['purchaseDate'].isnull()[0])
         # if warranty has expired, create payment
-        if (datetime.now() + timedelta(months=item_df["modelWarranty"])) > item_df["purchaseDate"]:
-            requestId = item_df["requestId"]
-            serviceFee = 40.00 + 0.2 * item_df["modelCost"]
+        if ((not item_df.empty) and itemPurchased and noActiveRequest):
+            # generate request
             self.connection.execute(
-                '''INSERT INTO Payment (requestId, serviceFee, paymentDate)
-                VALUES (%s, %s, CURDATE())'''
-                % (requestId, '{0:.2f}'.format(serviceFee)))
-            requestStatus = "Submitted and Waiting for payment"
-        # generate request
-        self.connection.execute(
-            '''INSERT INTO REQUEST (requestDate, requestStatus, customerId, itemId)
-            VALUES (CURDATE(), %s, %d, %d)'''
-            % (requestStatus, customerId, itemId))
-        # generate service
-        self.connection.execute(
-            '''INSERT INTO Service(serviceStatus, adminId, requestId)
-            VALUES ("Waiting for approval", NULL, (SELECT requestId FROM Request WHERE itemId = "%d"))'''
-            % itemId)
+                '''INSERT INTO REQUEST (requestDate, requestStatus, customerId, itemId)
+                VALUES (CURDATE(), "%s", %d, %d)'''
+                % (requestStatus, customerId, itemId))
+
+            wExpDate = item_df["purchaseDate"][0] + timedelta(days=item_df["modelWarranty"][0].item() * 30)
+            if datetime.now() > wExpDate:
+                #get request
+                request_df = pd.read_sql_query('SELECT r.requestId FROM Request r WHERE r.itemId = %d' % itemId, self.connection)
+                requestId = request_df["requestId"][0]
+                serviceFee = 40.00 + 0.2 * item_df["modelCost"][0].item()
+                self.connection.execute(
+                    'INSERT INTO Payment (requestId, serviceFee, paymentDate) VALUES (%d, %s, CURDATE())'
+                    % (requestId, '{0:.2f}'.format(serviceFee)))
+                requestStatus = "Submitted and Waiting for payment"
+            
+            # generate service
+            self.connection.execute(
+                '''INSERT INTO Service(serviceStatus, adminId, requestId) 
+                VALUES ("Waiting for approval", NULL, (SELECT requestId FROM Request WHERE itemId = %d))'''
+                % itemId)
+            return True
+        return False
+        # returns True if successful, False if item was not previously purchased by customer, or item does not belong to customer, or already has a request for the item
+        # that is active
 
     # -------------------------------------------------##--List of Requests Page--#-----------------------------------------------
 
 
     def retrieveRequests(self, customerId):
         # return all products with A REQUEST in the form of an array, consisting of requests objects
-        return pd.read_sql_query('''
-            SELECT r.requestId, r.requestDate, p.serviceFee, r.requestStatus, r.itemId FROM Request r LEFT JOIN Payment p ON r.requestId = p.requestId WHERE r.customerId = "%d" ORDER BY FIELD(r.requestStatus, 
-            "Submitted", "Submitted and Waiting for payment", "In progress", "Approved", "Completed", "Cancelled"'''
-            % (customerId),
+        return pd.read_sql_query(
+            '''SELECT r.requestId, r.requestDate, p.serviceFee, r.requestStatus, r.itemId 
+            FROM Request r 
+            LEFT JOIN Payment p ON r.requestId = p.requestId 
+            WHERE r.customerId = %d 
+            ORDER BY FIELD(r.requestStatus, 
+                "Submitted", 
+                "Submitted and Waiting for payment", 
+                "In progress", 
+                "Approved", 
+                "Completed", 
+                "Canceled")'''
+            % (customerId), 
             self.connection)
 
 
@@ -195,7 +211,7 @@ class Connection:
 
 
     def onCancelRequest(self, itemId):
-        # change request staus to cancelled
+        # change request staus to Canceled
         self.connection.execute(
             '''UPDATE Request SET requestStatus = 'Canceled' WHERE itemId = %d'''
             % itemId)
@@ -297,11 +313,11 @@ class Connection:
         # void function that updates serviceStatus of Service  to "In progress"
         # update request
         self.connection.execute(
-            'UPDATE Request r INNER JOIN Service s ON r.requestId = s.requestId SET r.requestStatus = "Approved" WHERE s.serviceId = "%d"'
+            'UPDATE Request r INNER JOIN Service s ON r.requestId = s.requestId SET r.requestStatus = "Approved" WHERE s.serviceId = %d'
             % serviceId)
         # update service
         self.connection.execute(
-            'UPDATE Service SET serviceStatus = "In progress", adminId = "%d" WHERE serviceId = "%d"'
+            'UPDATE Service SET serviceStatus = "In progress", adminId = %d WHERE serviceId = %d'
             % (adminId, serviceId))
         return
 
@@ -310,19 +326,19 @@ class Connection:
         # clicking completed checkbox will update service status to be completed.
         # update request
         self.connection.execute(
-            '''   UPDATE Request r
-            INNER JOIN Service s ON r.requestId = s.requestId
-            SET r.requestStatus = "Completed"
-            WHERE s.serviceId = "%d"'''
+            '''UPDATE Request r 
+            INNER JOIN Service s ON r.requestId = s.requestId 
+            SET r.requestStatus = "Completed" 
+            WHERE s.serviceId = %d'''
             % serviceId)
         # update service
         self.connection.execute(
-            'UPDATE Service SET serviceStatus = "Completed" WHERE serviceId = "%s"'
+            'UPDATE Service SET serviceStatus = "Completed" WHERE serviceId = %d'
             % serviceId)
         return
 
     # -------------------------------------------------##--View Requests (Unpaid Service Fee)--#--------------------------------------
-    # not including customers whose requests have been cancelled due to non-payment
+    # not including customers whose requests have been Canceled due to non-payment
     # include customers whose request status is "submitted and waiting for payment"
     # Return a dataframe of requests which have columns requestId, requestDate, requestStatus, customerId, itemId
 
