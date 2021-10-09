@@ -100,10 +100,10 @@ def customerSearch(selection):
 
 
 # TESTING
-print(customerSearch({"model": "", "category": "locks",  "color": "white",
-                      "productionYear": "2015", "factory": "", "powerSupply": "Battery"}))
-print(customerSearch({"model": "", "category": "",  "color": "",
-                      "productionYear": "", "factory": "", "powerSupply": ""}))
+# print(customerSearch({"model": "", "category": "locks",  "color": "white",
+#                       "productionYear": "2015", "factory": "", "powerSupply": "Battery"}))
+# print(customerSearch({"model": "", "category": "",  "color": "",
+#                       "productionYear": "", "factory": "", "powerSupply": ""}))
 
 
 def adminSearch(selection):
@@ -113,10 +113,11 @@ def adminSearch(selection):
             queryDict[key.title()] = { # Make key and value title case, no spaces
                 "$in": 
                     [float(value)
-                        if key == "productionYear" else value.title() for value in array
+                        if key == "productionYear" else value for value in array
                     ]
                 }
 
+    print(queryDict)
     # Perform MongoDB aggregation
     pipeline = [
         {
@@ -125,17 +126,17 @@ def adminSearch(selection):
                 "let": {"model": "$Model", "category": "$Category"},
                 "pipeline": [
                     {"$match":
-                     {"$expr":
-                      {"$and":
-                       [
-                           {"$eq": ["$Model",  "$$model"]},
-                           {"$eq": ["$Category", "$$category"]}
-                       ]
-                       }
-                      }
-                     }
+                        {"$expr":
+                            {"$and":
+                                [
+                                    {"$eq": ["$Model",  "$$model"]},
+                                    {"$eq": ["$Category", "$$category"]}
+                                ]
+                            }
+                        }
+                    }
                 ],
-                "as": "Model"
+                "as": "Model_Item"
             }
         },
         {
@@ -144,19 +145,20 @@ def adminSearch(selection):
         {
             "$addFields": {
                 "Sold": {"$cond": [{"$eq": ["$PurchaseStatus","Sold"]}, 1, 0]},
-                "Unsold": {"$cond": [{"$eq": ["$PurchaseStatus","Unsold"]}, 1, 0]}
+                "Unsold": {"$cond": [{"$eq": ["$PurchaseStatus","Unsold"]}, 1, 0]},
+                "serviceFee": { "$sum": [40, { "$multiply": [ {"$first": "$Model_Item.Cost ($)"}, 0.2 ] }]}
             }
         },
         {
             "$group": {
-                "_id": "$Model.ProductID",
-                "model": {"$first": "$Model.Model"},
-                "serviceFee": {"$first": { "$sum": [40, { "$multiply": [ "$Model.Cost", 0.2 ] }]}},
-                "category": {"$first": "$Model.Category"},
-                "price": {"$first": "$Model.Price"},
+                "_id": {"$first": "$Model_Item.ProductID"},
+                "model": {"$first": {"$first": "$Model_Item.Model"}},
+                "category": {"$first": {"$first": "$Model_Item.Category"}},
+                "price": {"$first": {"$first": "$Model_Item.Price ($)"}},
+                "serviceFee": {"$first": "$serviceFee"},
                 "numItemsInStock": {"$sum": "$Unsold"},
                 "numItemsSold": {"$sum": "$Sold"},
-                "warranty": {"$first": "$Model.Warranty"},
+                "warranty": {"$first": {"$first": "$Model_Item.Warranty (months)"}},
                 "itemIDs": {"$push": "$ItemID"}
             }
         },
@@ -167,15 +169,12 @@ def adminSearch(selection):
 
     cursor = collection.aggregate(pipeline)
 
-    # add service fee here
-
     results = list(cursor)  # convert the documents object into a list
     df = pd.DataFrame(results)
     df.rename(columns={'_id': 'productId'}, inplace=True)
 
-    # flatMap values that are in lists
-    columns = ['productId', 'model', 'category', 'price', 'warranty']
-    for column in columns:
-        df[column] = df[column].apply(lambda arr: arr[0])
-
     return df
+
+
+# TESTING
+print(adminSearch({"model": ["Light1", "Light2", "SmartHome1"]}))
