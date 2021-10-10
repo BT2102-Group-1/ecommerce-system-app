@@ -1,61 +1,63 @@
 import tkinter as tk
 from tkinter import messagebox
+import main as mainpage
 from CustomerRegister import *
-from main import *
-from PurchaseHistory import *
+from CustomerMenu import *
 
 def customerLogin():
-
   window = tk.Tk()
   window.title("Customer Login")
   window.geometry("500x500")
-  #add frame
+
+  # Add Frame
   frame = tk.LabelFrame(window, text="Customer Login ", padx=20, pady=20)
   frame.pack()
-  #frame heading
-  #frame.heading = ('Customer Log in page')
-  #title = tk.Label(frame, text = "Customer Login")
-  #title.pack()
 
-  #for text variable
+  # Text variable
   username_verification = tk.StringVar() 
   password_verification = tk.StringVar()
 
-  #print email address
+  customerID = mainpage.customerID
+
+  # Print email address
   username_label = tk.Label(frame, text = "Email address").pack()
-  #input box for email
+
+  # Input box for email
   username = tk.Entry(frame, text = "Email address", width=10, textvariable= username_verification).pack()
 
-  #print password 
+  # Print password 
   password_label = tk.Label(frame, text = "Password").pack()
-  #input box for password
+
+  # Input box for password
   password = tk.Entry(frame, text = "Password", width=10, textvariable = password_verification).pack()
 
-
-  # verification - need change this 
+  # Verification - need change this 
   def verifyLogin():
-    if (not username_verification.get() or not password_verification.get()):
-      tk.messagebox.showerror("Login Unsuccessful","Error. Please ensure all fields are filled.")
-    #customerID = backend(username_verification.get(), password_verification.get())
-    #customerID = 1
+    # if (not username_verification.get() or not password_verification.get()):
+    #   tk.messagebox.showerror("Login Unsuccessful","Error. Please ensure all fields are filled.")
     if (customerID >= 0):
       redirectToCustomerHome()
-    else:
+    elif(not username_verification.get() or not password_verification.get()):
       tk.messagebox.showerror("Login Unsuccessful","Error. Please check your email address or password again.")
 
-  #need redirect to product search page 
+  # Redirect to Menu Page 
   def redirectToCustomerHome():
-    root.destroy()
-    productSearch()
-
-  #login button
+    #customerID = backend(username_verification.get(), password_verification.get())
+    # print(customerID)
+    window.destroy()
+    customerMenu()
+    
+  # Login button
   loginButton = tk.Button(frame, text = "Log In", command = verifyLogin)
   loginButton.pack()
 
-  #register button
+  tk.Label(frame,text = " ").pack()
+
+  # Register button
   register = tk.Label(frame,text = "No Account? Register now!")
   register.pack()
 
+  # Redirect to Register Page 
   def registernow():
     window.destroy()
     customerRegister()

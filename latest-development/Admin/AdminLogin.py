@@ -45,4 +45,3 @@ def adminLogin():
   loginButton.pack()
   
   window.mainloop()
-

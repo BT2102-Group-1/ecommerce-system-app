@@ -1,39 +1,77 @@
-from tkinter import *
+import tkinter as tk
 from tkinter import ttk
 from main import *
 
 def purchaseHistory():
   window = tk.Tk()
   window.title("Purchase History")
-  window.geometry("500x500")
-  history_frame = tk.LabelFrame(window, text="Purchase History", padx=20, pady=20)
-  history_frame.pack()
-  # Create an object of Style widget
-  style = ttk.Style()
-  style.theme_use('clam')
+  window.geometry("700x700")
 
-  # Add a Treeview widget
-  tree = ttk.Treeview(history_frame, column=("FName", "LName", "Roll No"), show='headings', height=5)
-  tree.column("# 1", anchor=CENTER)
-  tree.heading("# 1", text="FName")
-  tree.column("# 2", anchor=CENTER)
-  tree.heading("# 2", text="LName")
-  tree.column("# 3", anchor=CENTER)
-  tree.heading("# 3", text="Roll No")
+  # Create Frame for List of Purchase History
+  frame = tk.LabelFrame(window, text="Purchase History", padx=20, pady=20)
+  frame.grid(row=0, column=0)
 
-  # Insert the data in Treeview widget
-  tree.insert('', 'end', text="1", values=('Amit', 'Kumar', '17701'))
-  tree.insert('', 'end', text="1", values=('Ankush', 'Mathur', '17702'))
-  tree.insert('', 'end', text="1", values=('Manisha', 'Joshi', '17703'))
-  tree.insert('', 'end', text="1", values=('Shivam', 'Mehrotra', '17704'))
+  # DUMMY DATA THAT"LL BE DELETED>.. -----
+  dummydata = [
+    {"itemId":"1001", "purchaseDate": "10/10/2021", "modelPrice": "$60", "modelName": "Light2", "categoryName": "Lights", "color":"White", "factory":"Malaysia", "powerSupply":"Battery", "productionYear":"2014"
+    },
+    {"itemId":"4523", "purchaseDate": "10/10/2021", "modelPrice": "$50", "modelName": "Light1", "categoryName": "Lights", "color":"White", "factory":"Malaysia", "powerSupply":"Battery", "productionYear":"2014"
+    },
+    {"itemId":"4368", "purchaseDate": "10/10/2021", "modelPrice": "$100", "modelName": "SmartHome1", "categoryName": "Lights", "color":"White", "factory":"Malaysia", "powerSupply":"Battery", "productionYear":"2014"
+    },
+    {"itemId":"2597", "purchaseDate": "10/10/2021", "modelPrice": "$50", "modelName": "Light1", "categoryName": "Lights", "color":"White", "factory":"Malaysia", "powerSupply":"Battery", "productionYear":"2014"
+    },
+    {"itemId":"6364", "purchaseDate": "10/10/2021", "modelPrice": "$50", "modelName": "Light1", "categoryName": "Lights", "color":"White", "factory":"Malaysia", "powerSupply":"Battery", "productionYear":"2014"
+    }
+  ]
 
-  tree.pack()
+  # Table View 
+  table = ttk.Treeview(frame)
+  table['columns'] = ("Item ID", "Purchase Date", "Category Name", "Model Name", "Model Price", "Color", "Factory", "Power Supply", "Production Year")
 
-  def showInput():
-    item_details = tk.Label(history_frame, text=var.get()).pack()
+  table.column('#0', width=0, stretch=tk.NO)
+  table.column('Item ID', anchor=tk.CENTER, width=150)
+  table.column('Purchase Date', anchor=tk.CENTER, width=300)
+  table.column('Category Name', anchor=tk.CENTER, width=300)
+  table.column('Model Name', anchor=tk.CENTER, width=250)
+  table.column('Model Price', anchor=tk.CENTER, width=250)
+  table.column('Color', anchor=tk.CENTER, width=130)
+  table.column('Factory', anchor=tk.CENTER, width=120)
+  table.column('Power Supply', anchor=tk.CENTER, width=280)
+  table.column('Production Year', anchor=tk.CENTER, width=400)
 
-  var = StringVar()
-  x = Entry(history_frame, textvariable=var).pack()
-  test = Button(history_frame, text="test", command=showInput).pack()
+  table.heading('#0', text='', anchor=tk.CENTER)
+  table.heading('Item ID', text='Item ID', anchor=tk.CENTER)
+  table.heading('Purchase Date', text='Purchase Date', anchor=tk.CENTER)
+  table.heading('Category Name', text='Category Name', anchor=tk.CENTER)
+  table.heading('Model Name', text='Model Name', anchor=tk.CENTER)
+  table.heading('Model Price', text='Model Price', anchor=tk.CENTER)
+  table.heading('Color', text='Color', anchor=tk.CENTER)
+  table.heading('Factory', text='Factory', anchor=tk.CENTER)
+  table.heading('Power Supply', text='Power Supply', anchor=tk.CENTER)
+  table.heading('Production Year', text='Production Year', anchor=tk.CENTER)
+
+  # Displaying Data  
+  for item in dummydata:
+    itemId = item.get('itemId')
+    purchaseDate = item.get('purchaseDate')
+    categoryName = item.get('categoryName')
+    modelName = item.get('modelName')
+    modelPrice = item.get('modelPrice')
+    color = item.get('color')
+    factory = item.get('factory')
+    powerSupply = item.get('powerSupply')
+    productionYear = item.get('productionYear')
+
+    table.insert(parent='', index=itemId, iid=itemId, text='', values=(itemId, purchaseDate, categoryName, modelName, modelPrice, color, factory, powerSupply, productionYear))
+
+  table.grid(row=1, column=0)
+
+  def redirectToMenu():
+    window.destroy()
+    from CustomerMenu import customerMenu
+    customerMenu()
+
+  tk.Button(window, text="Return to Menu", command = redirectToMenu).grid(row=2, column=0)
 
   window.mainloop()

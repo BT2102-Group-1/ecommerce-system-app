@@ -1,5 +1,6 @@
 import tkinter as tk
 from Admin.AdminViewInventory import *
+from Admin.AdminProductCatalogue import *
 from Admin.AdminServiceList import *
 from Admin.AdminUnpaidRequest import *
 
@@ -8,9 +9,11 @@ def adminMenu():
   window.title("Admin Menu")
   window.geometry("500x500")
 
+  def initialiseDatabase():
+    print("Initialised Database")
+
   #Function to Initialise Database (NO REDIRECT)
   def redirectToInitialiseDatabase():
-    window.destroy()
     initialiseDatabase()
 
   # Redirect to View Inventory Page

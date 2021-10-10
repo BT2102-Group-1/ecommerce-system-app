@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import ttk
 from main import *
 
 def productSearch():
@@ -11,7 +12,74 @@ def productSearch():
   search_frame.pack()
   display_frame = tk.LabelFrame(window, text="Search Results", padx=20, pady=20)
   display_frame.pack()
-  
+
+  # DUMMY DATA WE DO NOT NEED TO CARE ABOUT EVENTUALLY -----
+  # RETURN VALUE: arr = [[productNameVar, price, # of items in stock, warranty, [list of items objects]],[[productNameVar, price, # of items in stock, warranty, [list of items objects]],[[productNameVar, price, # of items in stock, warranty, [list of items objects]] etc ..
+  dummydata = [
+    ["Light1", "Lights", "$50", "96", [
+        {"ItemID":"1001", "Color":"White", "Factory":"Malaysia", "PowerSupply":"Battery", "ProductionYear":"2014"
+        },
+        {"ItemID":"1002", "Color":"Blue", "Factory":"Malaysia", "PowerSupply":"USB", "ProductionYear":"2016"
+        },
+        {"ItemID":"1003", "Color":"White", "Factory":"Philippines", "PowerSupply":"USB", "ProductionYear":"2020"
+        }
+      ]
+    ],
+    ["Light2", "Lights", "$60", "96", [
+      {"ItemID":"1283", "Color":"White", "Factory":"Malaysia", "PowerSupply":"Battery", "ProductionYear":"2016"
+        },
+        {"ItemID":"1293", "Color":"Yellow", "Factory":"China", "PowerSupply":"USB", "ProductionYear":"2017"
+        },
+        {"ItemID":"1296", "Color":"Green", "Factory":"Philippines", "PowerSupply":"Battery", "ProductionYear":"2019"
+        }
+      ]
+    ]
+    # ["SmartHome1", "Lights", "$70", "96", [
+    #     {"ItemID":"1374", "Color":"Black", "Factory":"China", "PowerSupply":"Battery", "ProductionYear":"2017"
+    #     },
+    #     {"ItemID":"1379", "Color":"White", "Factory":"Malaysia", "PowerSupply":"USB", "ProductionYear":"2015"
+    #     },
+    #     {"ItemID":"1389", "Color":"Yellow", "Factory":"China", "PowerSupply":"USB", "ProductionYear":"2014"
+    #     }
+    #   ]
+    # ],
+    # ["Safe1", "Locks", "$100", "96", [
+    #     {"ItemID":"1423", "Color":"White", "Factory":"China", "PowerSupply":"Battery", "ProductionYear":"2017"
+    #     },
+    #     {"ItemID":"1436", "Color":"Blue", "Factory":"Malaysia", "PowerSupply":"Battery", "ProductionYear":"2020"
+    #     },
+    #     {"ItemID":"1493", "Color":"Black", "Factory":"Philippines", "PowerSupply":"USB", "ProductionYear":"2019"
+    #     }
+    #   ]
+    # ],
+    # ["Safe2", "Locks", "$50", "96", [
+    #     {"ItemID":"1542", "Color":"Yellow", "Factory":"Malaysia", "PowerSupply":"Battery", "ProductionYear":"2014"
+    #     },
+    #     {"ItemID":"1554", "Color":"Blue", "Factory":"Philippines", "PowerSupply":"USB", "ProductionYear":"2016"
+    #     },
+    #     {"ItemID":"1567", "Color":"Green", "Factory":"Philippines", "PowerSupply":"USB", "ProductionYear":"2020"
+    #     }
+    #   ]
+    # ],
+    # ["Safe3", "Locks", "$50", "96", [
+    #     {"ItemID":"1684", "Color":"White", "Factory":"Malaysia", "PowerSupply":"Battery", "ProductionYear":"2014"
+    #       },
+    #       {"ItemID":"1693", "Color":"Blue", "Factory":"China", "PowerSupply":"USB", "ProductionYear":"2017"
+    #       },
+    #       {"ItemID":"1699", "Color":"Black", "Factory":"Philippines", "PowerSupply":"USB", "ProductionYear":"2015"
+    #       }
+    #   ]
+    # ],
+    # ["SmartHome1", "Locks", "$50", "96", [
+    #   {"ItemID":"1783", "Color":"White", "Factory":"Malaysia", "PowerSupply":"Battery", "ProductionYear":"2019"
+    #     },
+    #     {"ItemID":"1788", "Color":"Blue", "Factory":"Malaysia", "PowerSupply":"USB", "ProductionYear":"2016"
+    #     },
+    #     {"ItemID":"1790", "Color":"Green", "Factory":"China", "PowerSupply":"Battery", "ProductionYear":"2015"
+    #     }
+    #   ]
+    # ]
+  ]
   # Initialize variables and dictionary
   light1val, light2val, safe1val, safe2val, smarthome1val, locksval, lightsval, whiteval, blueval, yellowval, greenval, blackval, malaysiaval, chinaval, philippinesval, batteryval, usbval, val2020, val2019, val2017, val2016, val2015, val2014 = (tk.StringVar() for i in range(23))
 
@@ -47,14 +115,71 @@ def productSearch():
           dict[key] = arr
     
     print(dict) 
-    # call backend function customerSearch(dict) to get items array
+    # Call backend function customerSearch(dict) to get items array
     items = []
-    displaySearchItems(items)
+    displaySearchItems(dummydata)
   
   # Display search items
   def displaySearchItems(items):
-    tk.Label(display_frame, text="HELLO TESTING SEARCH").grid(row=0, column=0)
+    # tk.Button(display_frame, height=1, width=10, text="Purchase").grid(row=0, column=0)
 
+    count = 1
+    index = 0
+    dict = {}
+    for modelDict in items:
+      tableIndex = "product_table"
+      tableIndex += str(index)
+      index+=1 
+      print(tableIndex)    
+    
+      tk.Label(display_frame, text="Model: " + modelDict[0] + ", Category: " + modelDict[1] + ", Price: " + modelDict[2]).grid(row=count, column=0)
+      count += 1
+      tk.Label(display_frame, text="Number of Items In Stock: " + str(len(modelDict[4]))).grid(row=count, column=0)
+      count += 1
+
+      # table = modelDict[0]+modelDict[1]
+
+      dict[tableIndex]=ttk.Treeview(display_frame)
+      print(dict[tableIndex])
+      dict[tableIndex]['columns'] = ("ItemID", "Color", "Factory", "Power Supply", "Production Year")
+
+      def selectItem(a):
+        curItem = dict[tableIndex].focus()
+        print(curItem)
+        print(dict[tableIndex].item(curItem)) 
+
+
+      dict[tableIndex].column('#0', width=0, stretch=tk.NO)
+      dict[tableIndex].column('ItemID', anchor=tk.CENTER, width=100)
+      dict[tableIndex].column('Color', anchor=tk.CENTER, width=100)
+      dict[tableIndex].column('Factory', anchor=tk.CENTER, width=120)
+      dict[tableIndex].column('Power Supply', anchor=tk.CENTER, width=150)
+      dict[tableIndex].column('Production Year', anchor=tk.CENTER, width=170)
+
+      dict[tableIndex].heading('#0', text='', anchor=tk.CENTER)
+      dict[tableIndex].heading('ItemID', text='ItemID', anchor=tk.CENTER)
+      dict[tableIndex].heading('Color', text='Color', anchor=tk.CENTER)
+      dict[tableIndex].heading('Factory', text='Factory', anchor=tk.CENTER)
+      dict[tableIndex].heading('Power Supply', text='Power Supply', anchor=tk.CENTER)
+      dict[tableIndex].heading('Production Year', text='Production Year', anchor=tk.CENTER)
+      dict[tableIndex].bind('<ButtonRelease-1>', selectItem)
+
+      for item in modelDict[4]:
+        itemId = item.get('ItemID')
+        color = item.get('Color')
+        factory = item.get('Factory')
+        powerSupply = item.get('PowerSupply')
+        productionYear = item.get('ProductionYear')
+        dict[tableIndex].insert(parent='', index=itemId, iid=itemId, text='', values=(itemId, color, factory, powerSupply, productionYear))
+      
+      dict[tableIndex].grid(row = count, column = 0)
+      count += 1
+      tk.Label(display_frame, text=" ").grid(row=count, column=0)
+      count += 1
+
+    print(dict)
+  
+      
   # Advance Search Options
   def onClick(): 
     tk.Label(search_frame, text="   ").grid(row=4, column=0)

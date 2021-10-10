@@ -1,17 +1,17 @@
 import tkinter as tk
 
-def adminServiceList():
+def adminProductCatalogue():
 
   window = tk.Tk()
-  window.title("Admin - Service List")
+  window.title("Admin - Product Catalogue")
   window.geometry("500x500")
 
  #add frame
-  frame = tk.LabelFrame(window, text="Service List", padx=20, pady=20)
+  frame = tk.LabelFrame(window, text="Product Catalogue", padx=20, pady=20)
 
 
   #print welcome message just to show it renders
-  tk.Label(frame, text = "Welcome to Service List Page").pack()
+  tk.Label(frame, text = "Product Catalogue").pack()
 
   # Redirect to Initialise Database
   def redirectToMenu():
