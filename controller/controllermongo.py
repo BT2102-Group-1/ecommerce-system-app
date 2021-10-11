@@ -65,7 +65,6 @@ class Mongo:
             {
                 "$addFields": {
                     "Unsold": {"$cond": [{"$eq": ["$PurchaseStatus","Unsold"]}, 1, 0]},
-                    "serviceFee": { "$sum": [40, { "$multiply": [ {"$first": "$Model_Item.Cost ($)"}, 0.2 ] }]}
                 }
             },
             {
@@ -74,10 +73,9 @@ class Mongo:
                     "model": {"$first": {"$first": "$Model_Item.Model"}},
                     "category": {"$first": {"$first": "$Model_Item.Category"}},
                     "price": {"$first": {"$first": "$Model_Item.Price ($)"}},
-                    "serviceFee": {"$first": "$serviceFee"},
                     "numItemsInStock": {"$sum": "$Unsold"},
                     "warranty": {"$first": {"$first": "$Model_Item.Warranty (months)"}},
-                    "itemIDs": {"$push": "$ItemID"}
+                    "items": {"$push": {"ItemID": "$ItemID", "Color": "$Color", "Factory": "$Factory", "PowerSupply": "$PowerSupply", "ProductionYear": "$ProductionYear"}}
                 }
             },
             {
