@@ -111,7 +111,6 @@ class Mongo:
                         ]
                     }
 
-        print(queryDict)
         # Perform MongoDB aggregation
         pipeline = [
             {

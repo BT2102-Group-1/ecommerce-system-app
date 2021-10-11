@@ -357,6 +357,7 @@ if __name__ == '__main__':
     print(db.engine)
     print(db.initialiseDatabase())
     print(db.viewInventory())
+    print(db.adminSearch({"model": ["Light1", "Light2", "SmartHome1"]}))
     # print(pd.read_sql('customer', db.connection))
     # print(pd.read_sql_query('SELECT * FROM Customer WHERE gender = "F"', db.connection))
 
