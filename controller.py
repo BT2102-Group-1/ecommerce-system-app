@@ -96,9 +96,7 @@ class Connection:
         item_df = pd.read_sql_query(
             'SELECT i.itemId FROM Item i WHERE i.itemId = %d AND i.purchaseStatus = "Unsold"' 
             % itemId, self.connection)
-        print(item_df)
         if not item_df.empty:
-            print(customerId)
             self.connection.execute(
                 'UPDATE Item i SET i.purchaseStatus = "Sold", i.customerId = %d, i.purchaseDate = CURDATE() WHERE i.itemId = %d'
                 % (customerId, itemId))
