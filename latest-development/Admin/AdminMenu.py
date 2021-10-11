@@ -3,18 +3,28 @@ from Admin.AdminViewInventory import *
 from Admin.AdminProductCatalogue import *
 from Admin.AdminServiceList import *
 from Admin.AdminUnpaidRequest import *
+from tkinter import messagebox
 
 def adminMenu():
   window = tk.Tk()
   window.title("Admin Menu")
-  window.geometry("500x500")
+  window.geometry("800x800")
+  window.configure(bg="#f9f9f8")
 
-  def initialiseDatabase():
-    print("Initialised Database")
+  # Add Frame
+  frame = tk.LabelFrame(window, text="Admin Menu ", bg="#F9FBF2", padx=20, pady=20)
+  frame.pack()
 
-  #Function to Initialise Database (NO REDIRECT)
   def redirectToInitialiseDatabase():
-    initialiseDatabase()
+     ## CALL BACKEND --------------------------
+     # remove hardcoded "success = True"
+     # add "success = controller.InitialiseDatabase()"
+     ## ---------------------------------------
+    success = True #HARDCODED DATA [REMOVE when linking to backend!!]
+    if (success == True): 
+      messagebox.showinfo("Success", "Successfully initialised database. Please click 'View Inventory' to see newly added items.")
+    else:
+      messagebox.showerror("Error", "Failed to initialise database.")
 
   # Redirect to View Inventory Page
   def redirectToViewInventory():
@@ -42,16 +52,16 @@ def adminMenu():
     from main import main
     main()
 
-  tk.Button(text="Initialise Database", command = redirectToInitialiseDatabase, width = 30).pack(pady = 5)
+  tk.Button(frame, text="Initialise Database", bg='#fbf2fa', command = redirectToInitialiseDatabase, width = 30).pack(pady = 5)
 
-  tk.Button(text="View Inventory", command = redirectToViewInventory, width = 30).pack(pady = 5)
+  tk.Button(frame, text="View Inventory", bg='#fbf2fa', command = redirectToViewInventory, width = 30).pack(pady = 5)
 
-  tk.Button(text="Product Catalogue", command = redirectToProductCatalogue, width = 30).pack(pady = 5)
+  tk.Button(frame, text="Product Catalogue", bg='#fbf2fa', command = redirectToProductCatalogue, width = 30).pack(pady = 5)
 
-  tk.Button(text="View Service List", command = redirectToViewServiceList, width = 30).pack(pady = 5)
+  tk.Button(frame, text="View Service List", bg='#fbf2fa', command = redirectToViewServiceList, width = 30).pack(pady = 5)
 
-  tk.Button(text="View Requests (Unpaid Service Fee)", command = redirectToViewRequests, width = 30).pack(pady = 5)
+  tk.Button(frame, text="View Requests (Unpaid Service Fee)", bg='#fbf2fa', command = redirectToViewRequests, width = 30).pack(pady = 5)
 
-  tk.Button(text="Logout", command = redirectToMain, width = 20).pack(pady = 5)
+  tk.Button(frame, text="Logout", bg='#fbf2fa', command = redirectToMain, width = 20).pack(pady = 5)
 
   window.mainloop()
