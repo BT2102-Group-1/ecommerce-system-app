@@ -25,9 +25,7 @@ class Mongo:
             if len(array) != 0:
                 queryDict[key[:1].upper() + key[1:]] = { # Make key and value title case, no spaces
                     "$in": 
-                        [float(value)
-                            if key == "productionYear" else value[:1].upper() + value[1:] for value in array
-                        ]
+                        [value[:1].upper() + value[1:] for value in array]
                     }
 
         # Perform MongoDB aggregation
@@ -107,9 +105,7 @@ class Mongo:
             if len(array) != 0:
                 queryDict[key[:1].upper() + key[1:]] = { # Make key and value title case, no spaces
                     "$in": 
-                        [float(value)
-                            if key == "productionYear" else value[:1].upper() + value[1:] for value in array
-                        ]
+                        [value[:1].upper() + value[1:] for value in array]
                     }
 
         # Perform MongoDB aggregation
