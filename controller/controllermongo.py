@@ -21,12 +21,12 @@ class Mongo:
     def customerSearch(self, selection):
         queryDict = dict()
         queryDict["PurchaseStatus"] = "Unsold"  # find only Unsold items
-        for (key, value) in selection.items():
-            if len(value) != 0:
+        for (key, array) in selection.items():
+            if len(array) != 0:
                 queryDict[key[:1].upper() + key[1:]] = { # Make key and value title case, no spaces
                     "$in": 
-                        [float(v)
-                            if key == "productionYear" else v for v in value
+                        [float(value)
+                            if key == "productionYear" else value[:1].upper() + value[1:] for value in array
                         ]
                     }
 
@@ -105,10 +105,10 @@ class Mongo:
         queryDict = {}
         for (key, array) in selection.items():
             if len(array) != 0:
-                queryDict[key.title()] = { # Make key and value title case, no spaces
+                queryDict[key[:1].upper() + key[1:]] = { # Make key and value title case, no spaces
                     "$in": 
                         [float(value)
-                            if key == "productionYear" else value for value in array
+                            if key == "productionYear" else value[:1].upper() + value[1:] for value in array
                         ]
                     }
 
