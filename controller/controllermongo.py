@@ -25,8 +25,8 @@ class Mongo:
             if len(value) != 0:
                 queryDict[key[:1].upper() + key[1:]] = { # Make key and value title case, no spaces
                     "$in": 
-                        [float(value)
-                            if key == "productionYear" else value for value in value
+                        [float(v)
+                            if key == "productionYear" else v for v in value
                         ]
                     }
 
