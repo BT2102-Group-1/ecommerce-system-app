@@ -19,22 +19,16 @@ class Mongo:
 
 
     def customerSearch(self, selection):
-
-        # Transform selection input into a MongoDB query dictionary
         queryDict = dict()
         queryDict["PurchaseStatus"] = "Unsold"  # find only Unsold items
         for (key, value) in selection.items():
-            if value != "":
-
-                if key == "productionYear":
-                    # Make key title case, no spaces
-                    queryDict[key[:1].upper() + key[1:]] = float(value)
-                else:
-                    # Make value title case, no spaces (esp for Model)
-                    queryDict[key[:1].upper() + key[1:]
-                            ] = value[:1].upper() + value[1:]
-
-        print(queryDict)  # debugging
+            if len(value) != 0:
+                queryDict[key.title()] = { # Make key and value title case, no spaces
+                    "$in": 
+                        [float(value)
+                            if key == "productionYear" else value for value in value
+                        ]
+                    }
 
         # Perform MongoDB aggregation
         pipeline = [
@@ -44,17 +38,17 @@ class Mongo:
                     "let": {"model": "$Model", "category": "$Category"},
                     "pipeline": [
                         {"$match":
-                        {"$expr":
-                        {"$and":
-                        [
-                            {"$eq": ["$Model",  "$$model"]},
-                            {"$eq": ["$Category", "$$category"]}
-                        ]
-                        }
-                        }
+                            {"$expr":
+                                {"$and":
+                                    [
+                                        {"$eq": ["$Model",  "$$model"]},
+                                        {"$eq": ["$Category", "$$category"]}
+                                    ]
+                                }
+                            }
                         }
                     ],
-                    "as": "Model"
+                    "as": "Model_Item"
                 }
             },
             # {
@@ -71,13 +65,20 @@ class Mongo:
                 "$match": queryDict
             },
             {
+                "$addFields": {
+                    "Unsold": {"$cond": [{"$eq": ["$PurchaseStatus","Unsold"]}, 1, 0]},
+                    "serviceFee": { "$sum": [40, { "$multiply": [ {"$first": "$Model_Item.Cost ($)"}, 0.2 ] }]}
+                }
+            },
+            {
                 "$group": {
-                    "_id": "$Model.ProductID",
-                    "model": {"$first": "$Model.Model"},
-                    "category": {"$first": "$Model.Category"},
-                    "price": {"$first": "$Model.Price"},
-                    "numItemsInStock": {"$sum": 1},
-                    "warranty": {"$first": "$Model.Warranty"},
+                    "_id": {"$first": "$Model_Item.ProductID"},
+                    "model": {"$first": {"$first": "$Model_Item.Model"}},
+                    "category": {"$first": {"$first": "$Model_Item.Category"}},
+                    "price": {"$first": {"$first": "$Model_Item.Price ($)"}},
+                    "serviceFee": {"$first": "$serviceFee"},
+                    "numItemsInStock": {"$sum": "$Unsold"},
+                    "warranty": {"$first": {"$first": "$Model_Item.Warranty (months)"}},
                     "itemIDs": {"$push": "$ItemID"}
                 }
             },
@@ -93,9 +94,9 @@ class Mongo:
         df.rename(columns={'_id': 'productId'}, inplace=True)
 
         # flatMap values that are in lists
-        columns = ['productId', 'model', 'category', 'price', 'warranty']
-        for column in columns:
-            df[column] = df[column].apply(lambda arr: arr[0])
+        # columns = ['productId', 'model', 'category', 'price', 'warranty']
+        # for column in columns:
+        #     df[column] = df[column].apply(lambda arr: arr[0])
 
         return df
 
