@@ -20,7 +20,7 @@ class Mongo:
 
     def customerSearch(self, selection):
         queryDict = dict()
-        queryDict["PurchaseStatus"] = "Unsold"  # find only Unsold items
+        queryDict["PurchaseStatus"] = ["Unsold"]  # find only Unsold items
         for (key, value) in selection.items():
             if len(value) != 0:
                 queryDict[key[:1].upper() + key[1:]] = { # Make key and value title case, no spaces
@@ -67,7 +67,6 @@ class Mongo:
             {
                 "$addFields": {
                     "Unsold": {"$cond": [{"$eq": ["$PurchaseStatus","Unsold"]}, 1, 0]},
-                    "serviceFee": { "$sum": [40, { "$multiply": [ {"$first": "$Model_Item.Cost ($)"}, 0.2 ] }]}
                 }
             },
             {
@@ -76,7 +75,6 @@ class Mongo:
                     "model": {"$first": {"$first": "$Model_Item.Model"}},
                     "category": {"$first": {"$first": "$Model_Item.Category"}},
                     "price": {"$first": {"$first": "$Model_Item.Price ($)"}},
-                    "serviceFee": {"$first": "$serviceFee"},
                     "numItemsInStock": {"$sum": "$Unsold"},
                     "warranty": {"$first": {"$first": "$Model_Item.Warranty (months)"}},
                     "itemIDs": {"$push": "$ItemID"}
