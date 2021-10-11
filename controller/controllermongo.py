@@ -23,7 +23,7 @@ class Mongo:
         queryDict["PurchaseStatus"] = "Unsold"  # find only Unsold items
         for (key, value) in selection.items():
             if len(value) != 0:
-                queryDict[key.title()] = { # Make key and value title case, no spaces
+                queryDict[key[:1].upper() + key[1:]] = { # Make key and value title case, no spaces
                     "$in": 
                         [float(value)
                             if key == "productionYear" else value for value in value
@@ -174,8 +174,8 @@ class Mongo:
 
 if __name__ == '__main__':
     m = Mongo()
-    print(m.customerSearch({"model": "", "category": "locks",  "color": "white",
-                        "productionYear": "2015", "factory": "", "powerSupply": "Battery"}))
-    print(m.customerSearch({"model": "", "category": "",  "color": "",
-                        "productionYear": "", "factory": "", "powerSupply": ""}))
+    print(m.customerSearch({"model": [], "category": ["locks"],  "color": ["white"],
+                        "productionYear": ["2015"], "factory": [], "powerSupply": ["Battery"]}))
+    print(m.customerSearch({"model": [], "category": [],  "color": [],
+                        "productionYear": [], "factory": [], "powerSupply": []}))
     print(m.adminSearch({"model": ["Light1", "Light2", "SmartHome1"]}))
