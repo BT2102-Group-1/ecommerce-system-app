@@ -23,16 +23,13 @@ def customerSearch(selection):
     queryDict = dict()
     queryDict["PurchaseStatus"] = "Unsold"  # find only Unsold items
     for (key, value) in selection.items():
-        if value != "":
-
-            if key == "productionYear":
-                # Make key title case, no spaces
-                queryDict[key[:1].upper() + key[1:]] = float(value)
-            else:
-                # Make value title case, no spaces (esp for Model)
-                queryDict[key[:1].upper() + key[1:]
-                          ] = value[:1].upper() + value[1:]
-
+        if len(value) != 0:
+            queryDict[key.title()] = { # Make key and value title case, no spaces
+                "$in": 
+                    [float(value)
+                        if key == "productionYear" else value for value in value
+                    ]
+                }
     print(queryDict)  # debugging
 
     # Perform MongoDB aggregation
@@ -53,7 +50,7 @@ def customerSearch(selection):
                       }
                      }
                 ],
-                "as": "Model"
+                "as": "Model_Item"
             }
         },
         # {
@@ -70,13 +67,20 @@ def customerSearch(selection):
             "$match": queryDict
         },
         {
+            "$addFields": {
+                "Unsold": {"$cond": [{"$eq": ["$PurchaseStatus","Unsold"]}, 1, 0]},
+                "serviceFee": { "$sum": [40, { "$multiply": [ {"$first": "$Model_Item.Cost ($)"}, 0.2 ] }]}
+            }
+        },
+        {
             "$group": {
-                "_id": "$Model.ProductID",
-                "model": {"$first": "$Model.Model"},
-                "category": {"$first": "$Model.Category"},
-                "price": {"$first": "$Model.Price"},
-                "numItemsInStock": {"$sum": 1},
-                "warranty": {"$first": "$Model.Warranty"},
+                "_id": {"$first": "$Model_Item.ProductID"},
+                "model": {"$first": {"$first": "$Model_Item.Model"}},
+                "category": {"$first": {"$first": "$Model_Item.Category"}},
+                "price": {"$first": {"$first": "$Model_Item.Price ($)"}},
+                "serviceFee": {"$first": "$serviceFee"},
+                "numItemsInStock": {"$sum": "$Unsold"},
+                "warranty": {"$first": {"$first": "$Model_Item.Warranty (months)"}},
                 "itemIDs": {"$push": "$ItemID"}
             }
         },
@@ -92,16 +96,15 @@ def customerSearch(selection):
     df.rename(columns={'_id': 'productId'}, inplace=True)
 
     # flatMap values that are in lists
-    columns = ['productId', 'model', 'category', 'price', 'warranty']
-    for column in columns:
-        df[column] = df[column].apply(lambda arr: arr[0])
+    # columns = ['productId', 'model', 'category', 'price', 'warranty']
+    # for column in columns:
+    #     df[column] = df[column].apply(lambda arr: arr[0])
 
     return df
 
 
 # TESTING
-# print(customerSearch({"model": "", "category": "locks",  "color": "white",
-#                       "productionYear": "2015", "factory": "", "powerSupply": "Battery"}))
+print(customerSearch({"model": ["Light1", "Light2", "SmartHome1"]}))
 # print(customerSearch({"model": "", "category": "",  "color": "",
 #                       "productionYear": "", "factory": "", "powerSupply": ""}))
 
