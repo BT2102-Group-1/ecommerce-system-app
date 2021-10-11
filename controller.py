@@ -6,12 +6,15 @@ from datetime import datetime, timedelta
 
 from sqlalchemy import create_engine
 
+from controller.controllermongo import Mongo
+
 
 class Connection:
     def __init__(self):
         self.engine = create_engine(
             'mysql+mysqlconnector://root:password@localhost/oshes', connect_args={'use_pure': True})
         self.connection = self.engine.connect()
+        self.mongodb = Mongo()
 
 
     # -------------------------------------------------##--Customer Login Page--#------------------------------------------------------
@@ -84,7 +87,7 @@ class Connection:
         #   Label(main, text=arr[0].[3].name)
 
         # frontend method, backend ignore!!!!!!
-        return
+        return self.mongodb.customerSearch(selection)
 
 
     def purchase(self, itemId, customerId):
@@ -293,7 +296,7 @@ class Connection:
         # arr = [[productNameVar, price, cost(service fee), # of items in stock, # of sold, warranty, [list of items objects]],[[productNameVar, price, cost(service fee), # of items in stock, # of sold, warranty, [list of items objects]] etc ...
 
         # BECAUSE we follow the design sent into the group drawn by hongpei sent by megan
-        return
+        return self.mongodb.adminSearch(selection)
 
     # -------------------------------------------------##--View Service List Page--#-----------------------------------------------
     # Display all past service sorted based on service status (awaiting approval on top, in progress in the middle, completed at the bottom),
