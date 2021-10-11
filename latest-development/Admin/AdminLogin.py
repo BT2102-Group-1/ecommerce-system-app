@@ -1,47 +1,55 @@
 import tkinter as tk
 from Admin.AdminMenu import *
+from tkinter import messagebox
+import GlobalVariables
 
 def adminLogin():
 
   window = tk.Tk()
   window.title("Admin Login")
-  window.geometry("500x500")
+  window.geometry("800x800")
+  window.configure(bg="#f9f9f8")
 
-  #add frame
-  frame = tk.LabelFrame(window, text="Admin Login ", padx=20, pady=20)
+  frame = tk.LabelFrame(window, text="Admin Login ", padx=20, pady=20, bg="#F9FBF2")
   frame.pack()
 
   #for text variable
   username_verification = tk.StringVar() 
   password_verification = tk.StringVar()
 
-  #print email address
-  username_label = tk.Label(frame, text = "Email address").pack()
-  #input box for email
-  username = tk.Entry(frame, text = "Email address", width=10, textvariable= username_verification).pack()
+  tk.Label(frame, text = "Admin ID", bg="#F9FBF2").pack()
+  tk.Entry(frame, text = "Admin ID", width=10, textvariable= username_verification, bg="#F9FBF2").pack()
 
-  #print password 
-  password_label = tk.Label(frame, text = "Password").pack()
-  #input box for password
-  password = tk.Entry(frame, text = "Password", width=10, textvariable = password_verification).pack()
+  tk.Label(frame, bg="#F9FBF2", text = "Password").pack()
+  tk.Entry(frame, bg="#F9FBF2", text = "Password", width=10, textvariable = password_verification).pack()
 
-  #need change to verification check 
+  def redirectToMain():
+    window.destroy()
+    from main import main
+    main()
+
   def redirectToAdminHome():
     window.destroy()
     adminMenu()
     
-  # verification
   def verifyLogin():
-    #backend(username_verification.get(), password_verification.get())
-    # input backend verification, if true 
-    verify = True
-    if (verify):
+    if (not username_verification.get() or not password_verification.get()):
+      tk.messagebox.showerror("Error","Login Unsuccessful. Please ensure all fields are filled.")
+    #else:
+    ## CALL BACKEND --------------------------
+    # remove hardcoded "adminIdVerify = 1"
+    # add "GlobalVariables.adminId = controller.adminLogin(username_verification.get(), password_verification.get())""
+    ## ---------------------------------------
+      
+    GlobalVariables.adminId = 1 #HARDCODED DATA [REMOVE when linking to backend!!]
+    if (GlobalVariables.adminId >= 0):
       redirectToAdminHome()
     else:
-      messagebox.showerror("Login Unsuccessful","Error. Please check your email address or password again.")
+      messagebox.showerror("Login Unsuccessful","Error. Please check Admin ID or password again.")
 
-  #login button
-  loginButton = tk.Button(frame, text = "Log In", command = verifyLogin)
-  loginButton.pack()
+  tk.Button(frame, text = "Log In", bg='#fbf2fa', command = verifyLogin).pack(pady = 15)
+
+  tk.Button(frame, bg='#fbf2fa', text="Return to main", command = redirectToMain).pack(pady = 5)
   
   window.mainloop()
+
