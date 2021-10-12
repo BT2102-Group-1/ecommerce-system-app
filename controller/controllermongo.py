@@ -159,12 +159,65 @@ class Mongo:
 
         return df.to_dict('records')
 
+    def findItem(self, itemId):
+        
+        # Perform MongoDB aggregation
+        pipeline = [
+            {
+                "$lookup": {
+                    "from": "Product",
+                    "let": {"model": "$Model", "category": "$Category"},
+                    "pipeline": [
+                        {"$match":
+                            {"$expr":
+                                {"$and":
+                                    [
+                                        {"$eq": ["$Model",  "$$model"]},
+                                        {"$eq": ["$Category", "$$category"]}
+                                    ]
+                                }
+                            }
+                        }
+                    ],
+                    "as": "Model"
+                }
+            },
+            {
+                "$match": {"ItemID": str(itemId)}
+            },
+            {
+                "$addFields": {
+                    "ModelName": {"$first": "$Model.Model"},
+                    "Price": {"$first": "$Model.Price ($)"},
+                    "Cost": {"$first": "$Model.Cost ($)"},
+                    "Warranty": {"$first": "$Model.Warranty (months)"},
+                }
+            },
+            {
+                "$project": {
+                    "_id": 0,
+                    "Model": 0,
+                    "ServiceStatus": 0,
+                    # "Price": { "$concat": ["$", "$Price"] },
+                    # "Cost": { "$concat": ["$", "$Cost"] },
+                    # "Warranty": { "$concat": ["$Model.Warranty (months)", " Months"] }
+                }
+            },
+        ]
+
+        cursor = self.collection.aggregate(pipeline)
+        results = list(cursor)  # convert the documents object into a list
+        df = pd.DataFrame(results)
+        df.rename(columns={'ModelName': 'Model'}, inplace=True)
+        return df.to_dict('records')
+
 # TESTING
 
 if __name__ == '__main__':
     m = Mongo()
+    print(m.findItem(1009))
     # print(m.adminSearch({'Model': [], 'Category': [], 'Color': [], 'Factory': [], 'PowerSupply': [], 'ProductionYear': [], 'PurchaseStatus': []}))
-    print(m.customerSearch({'Model': [], 'Category': [], 'Color': [], 'Factory': [], 'PowerSupply': [], 'ProductionYear': []}))
+    # print(m.customerSearch({'Model': [], 'Category': [], 'Color': [], 'Factory': [], 'PowerSupply': [], 'ProductionYear': []}))
     # print(m.customerSearch({"model": [], "category": ["locks"],  "color": ["white"],
     #                     "productionYear": ["2015"], "factory": [], "powerSupply": ["Battery"]}))
     # print(m.customerSearch({"model": [], "category": [],  "color": [],
