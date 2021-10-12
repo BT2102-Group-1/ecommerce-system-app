@@ -220,6 +220,10 @@ class Connection:
         self.connection.execute(
             '''UPDATE Request SET requestStatus = 'Canceled' WHERE requestId = %d'''
             % requestId)
+        # change service status of that request to completed so that it can't be approved or completed
+        self.connection.execute(
+            '''UPDATE Service SET serviceStatus = 'Completed' WHERE requestId = %d'''
+            % requestId)
 
 
     # -------------------------------------------------##--Admin Login Page--#-----------------------------------------------
