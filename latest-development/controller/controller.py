@@ -306,7 +306,7 @@ class Connection:
         return pd.read_sql_query(
             '''SELECT s.serviceId, r.itemId, r.customerId, s.serviceStatus FROM Service AS s INNER JOIN Request AS r ON s.requestId = r.requestId
             ORDER BY FIELD(s.serviceStatus,'Waiting for approval', 'In progress', 'Completed'), s.serviceId DESC''',
-            self.connection)
+            self.connection).to_dict('records')
 
 
     def approveServiceRequest(self, adminId, serviceId):
@@ -347,15 +347,16 @@ class Connection:
     def getUnpaidServiceCustomers(self):
         return pd.read_sql_query(
             'SELECT requestId, requestDate, requestStatus, customerId, itemId FROM oshes.Request WHERE requestStatus = "Submitted and Waiting for payment"', 
-            self.connection)
+            self.connection).to_dict('records')
         
 
 if __name__ == '__main__':
     db = Connection()
     print(db.engine)
     print(db.initialiseDatabase())
-    print(db.viewInventory())
-    print(db.adminSearch({"model": ["Light1", "Light2", "SmartHome1"]}))
+    print(db.requestServices())
+    # print(db.viewInventory())
+    # print(db.adminSearch({"model": ["Light1", "Light2", "SmartHome1"]}))
     # print(pd.read_sql('customer', db.connection))
     # print(pd.read_sql_query('SELECT * FROM Customer WHERE gender = "F"', db.connection))
 
