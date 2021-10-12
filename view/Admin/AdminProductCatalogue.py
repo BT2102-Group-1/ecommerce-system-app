@@ -274,7 +274,6 @@ def adminProductCatalogue():
 
   # Find Item
   def findAndDisplayItem():
-
    
     # CALL BACKEND -------------------------- 
     itemDetails = Connection().findItem(chosenItemId.get())
@@ -284,6 +283,7 @@ def adminProductCatalogue():
     # itemDetails = {"ItemID":"1001", "Model": "Lights1", "Category": "Lights", "Price": "$50", "Cost": "$20", "Color":"White", "Factory":"Malaysia", "PowerSupply":"Battery", "ProductionYear":"2014", "PurchaseStatus": "Unsold", "Warranty": "12 Months"}
 
     if bool(itemDetails):
+      itemDetails = itemDetails[0]
       # Display Data
       tk.Label(search2_frame, text=" ", bg="#F9FBF2").grid(row=3)
     

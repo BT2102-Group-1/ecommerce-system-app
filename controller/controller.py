@@ -302,7 +302,7 @@ class Connection:
             i.factory AS Factory, i.powerSupply AS PowerSupply, i.productionYear AS ProductionYear,
             i.purchaseStatus AS PurchaseStatus, CONCAT(m.modelWarranty, " Months") AS Warranty 
             FROM Item AS i INNER JOIN Model AS m WHERE i.productId = m.productId AND i.itemId = %s;''' % (itemId),
-            self.connection).to_dict('records')[0]
+            self.connection).to_dict('records')
         # return self.mongodb.findItem(itemId)
 
     # -------------------------------------------------##--View Service List Page--#-----------------------------------------------
