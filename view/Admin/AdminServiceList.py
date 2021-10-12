@@ -131,6 +131,8 @@ def adminServiceList():
             ## CALL BACKEND --------------------------
             serviceId = rowDictionary['values'][0]
             Connection().approveServiceRequest(GlobalVariables.adminId, serviceId)
+            window.destroy()
+            adminServiceList()
             print("Approved service")
             ## ---------------------------------------
         else:
@@ -153,6 +155,8 @@ def adminServiceList():
             serviceId = rowDictionary['values'][0]
             # Might need try catch for this if update fails
             Connection().completeServiceRequest(serviceId)
+            window.destroy()
+            adminServiceList()
             ## ---------------------------------------
         else:
             print("Cancelled process")
