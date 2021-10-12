@@ -78,7 +78,18 @@ def adminProductCatalogue():
 
   # Display search items
   def displaySearchItems(productList):
-    count = 2
+        
+    # Make A New Search
+    def newSearch():
+      window.destroy()
+      adminProductCatalogue()
+
+    # Make A New Search Button
+    tk.Button(display_frame, height=1, width=15, text="Make A New Search", bg='#fbf2fa', command=newSearch).grid(row=0, column=0, columnspan=4)
+
+    tk.Label(display_frame, text=" ", bg="#F9FBF2").grid(row=1)
+
+    count = 4
     for modelDict in productList:     
       tk.Label(display_frame, bg="#F9FBF2", text="Model: " + modelDict['model'] + ", Category: " + modelDict['category'] + ", Price: " + str(modelDict['price'])).grid(row=count, column=0, columnspan=4)
       count += 1

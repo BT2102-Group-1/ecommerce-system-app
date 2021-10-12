@@ -97,7 +97,7 @@ def productSearch():
       else:
         tk.messagebox.showerror("Error", "Wrong Item ID / No Such Item ID")
 
-    # Purchase Item
+    # Make A New Search
     def newSearch():
       window.destroy()
       productSearch()
@@ -114,7 +114,7 @@ def productSearch():
     # Purchase Button
     tk.Button(display_frame, height=1, width=10, text="Purchase", bg='#fbf2fa', command=purchaseItem).grid(row=0, column=3, sticky="E")
     # Make A New Search Button
-    tk.Button(display_frame, height=1, width=15, text="Make A New Search", bg='#fbf2fa', command=newSearch).grid(row=1, column=1, pady=15, padx=40)
+    tk.Button(display_frame, height=1, width=15, text="Make A New Search", bg='#fbf2fa', command=newSearch).grid(row=1, column=0, columnspan=4, pady = 15)
 
     tk.Label(display_frame, text=" ", bg="#F9FBF2").grid(row=2)
 
