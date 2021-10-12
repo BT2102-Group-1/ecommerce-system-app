@@ -114,7 +114,7 @@ class Connection:
         # item object should have itemid, price, model name, category, production year, colour, factory, powersupply, purchaseDate
         return pd.read_sql_query(
             '''SELECT itemId, modelPrice, modelName, categoryName, productionYear, color, factory, powerSupply, purchaseDate 
-            FROM Item LEFT JOIN Model USING (productId) WHERE customerId = 1 ORDER BY purchaseDate DESC''' 
+            FROM Item LEFT JOIN Model USING (productId) WHERE customerId = %d ORDER BY purchaseDate DESC''' 
             % customerId, 
             self.connection)
 
@@ -127,8 +127,8 @@ class Connection:
         # item object should have itemid, model name, purchaseDate, serviceFee, warranty (you can give us extra attributes if it is more convenient for your implementation) -- possible to give us warranty end date?
         return pd.read_sql_query(
             '''SELECT itemId, modelName, modelCost, modelWarranty, purchaseDate, DATE_ADD(purchaseDate, INTERVAL modelWarranty MONTH) warrantyDate 
-            FROM Item LEFT JOIN Model USING (productId) LEFT JOIN  Request USING (itemId) 
-            WHERE customerId = %d ORDER BY purchaseDate DESC''' 
+            FROM Item i LEFT JOIN Model USING (productId) LEFT JOIN  Request USING (itemId) 
+            WHERE i.customerId = %d ORDER BY purchaseDate DESC''' 
             % customerId, 
             self.connection)
 
@@ -274,7 +274,7 @@ class Connection:
         # return in the form of dictionary, key will be product ID, value will be in the form of array, array[0] is # of sold items and array[1] is # of unsold items
         # for front end side: it will display the table just like the PDF
         return pd.read_sql_query(
-            '''SELECT table1.iid AS 'ProductID', table1.sold AS 'Number of "SOLD" items', table2.unsold AS 'Number of "UNSOLD" items'
+            '''SELECT table1.iid AS 'productId', table1.sold AS 'soldItems', table2.unsold AS 'unsoldItems'
             FROM (SELECT productId AS iid, COUNT(productId) AS sold FROM Item WHERE purchaseStatus='Sold' GROUP BY productId) AS table1
             INNER JOIN (SELECT productId AS iid, COUNT(productId) AS unsold FROM Item WHERE purchaseStatus='Unsold' GROUP BY productId) AS table2
             ON table1.iid = table2.iid;''', 

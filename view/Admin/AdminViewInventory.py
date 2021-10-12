@@ -1,6 +1,8 @@
 import tkinter as tk
 from tkinter import ttk
 
+from controller.controller import Connection
+
 def adminViewInventory():
 
   window = tk.Tk()
@@ -32,25 +34,15 @@ def adminViewInventory():
   tv.heading('Number of "SOLD" items', text='Number of "SOLD" items', anchor=tk.CENTER)
   tv.heading('Number of "UNSOLD" items', text='Number of "UNSOLD" items', anchor=tk.CENTER)
 
-  dicts = [ #REMOVE HARDCODED DATA, SET IT = controller.viewInventory()
-    {"productId": "1", "soldItems": 90, "unsoldItems": 9},
-    {"productId": "2", "soldItems": 136, "unsoldItems": 163},
-    {"productId": "3", "soldItems": 29, "unsoldItems": 74},
-    {"productId": "4", "soldItems": 31, "unsoldItems": 99},
-    {"productId": "5", "soldItems": 46, "unsoldItems": 99},
-    {"productId": "6", "soldItems": 46, "unsoldItems": 95},
-    {"productId": "7", "soldItems": 50, "unsoldItems": 82}
-  ]
-
   ## CALL BACKEND --------------------------
-  # remove hardcoded list of dictionaries above under variable "dicts"
-  # set "dicts = controller.viewInventory()" [expecting to get a list of dictionaries]
+  itemsDf = Connection().viewInventory()
+  items = itemsDf.to_dict('records')
   ## ---------------------------------------
 
-  for dict in dicts:
-    productId = dict.get('productId')
-    soldItems = dict.get('soldItems')
-    unsoldItems = dict.get('unsoldItems')
+  for item in items:
+    productId = item.get('productId')
+    soldItems = item.get('soldItems')
+    unsoldItems = item.get('unsoldItems')
     tv.insert(parent='', index=productId, iid=productId, text='', values=(productId, soldItems, unsoldItems))
   tv.grid(row=1, column=0)
   # ------------End of Table View -------------------- #

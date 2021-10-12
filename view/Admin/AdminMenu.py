@@ -6,6 +6,8 @@ from view.Admin.AdminProductCatalogue import adminProductCatalogue
 from view.Admin.AdminServiceList import adminServiceList
 from view.Admin.AdminUnpaidRequest import adminUnpaidRequest
 
+from controller.controller import Connection
+
 def adminMenu():
   window = tk.Tk()
   window.title("Admin Menu")
@@ -17,12 +19,10 @@ def adminMenu():
   frame.pack()
 
   def redirectToInitialiseDatabase():
-     ## CALL BACKEND --------------------------
-     # remove hardcoded "success = True"
-     # add "success = controller.InitialiseDatabase()"
-     ## ---------------------------------------
-    success = True #HARDCODED DATA [REMOVE when linking to backend!!]
-    if (success == True): 
+    ## CALL BACKEND -------------------------- 
+    outcome = Connection().initialiseDatabase()
+    
+    if (outcome == True): 
       messagebox.showinfo("Success", "Successfully initialised database. Please click 'View Inventory' to see newly added items.")
     else:
       messagebox.showerror("Error", "Failed to initialise database.")
