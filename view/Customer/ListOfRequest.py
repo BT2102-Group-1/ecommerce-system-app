@@ -68,13 +68,13 @@ def listOfRequest():
     requestStatus = request.get('requestStatus')
 
     if requestStatus == "Submitted and Waiting for payment":
-      tv.insert(parent='', index=itemId, iid=itemId, text='', values=(requestId, itemId, requestDate, serviceFee, requestStatus, "-", "-")) 
+      tv.insert(parent='', index=itemId, text='', values=(requestId, itemId, requestDate, serviceFee, requestStatus, "-", "-")) 
 
     elif (requestStatus == "Canceled"):
-      tv.insert(parent='', index=itemId, iid=itemId, text='', values=(requestId,itemId, requestDate, serviceFee, requestStatus, "-", "Y"))
+      tv.insert(parent='', index=itemId, text='', values=(requestId,itemId, requestDate, serviceFee, requestStatus, "-", "Y"))
 
     else:
-      tv.insert(parent='', index=itemId, iid=itemId, text='', values=(requestId,itemId, requestDate, serviceFee, requestStatus, "Y", "-")) 
+      tv.insert(parent='', index=itemId, text='', values=(requestId,itemId, requestDate, serviceFee, requestStatus, "Y", "-")) 
 
   tv.grid(row=0, column=0, columnspan=4)
 
