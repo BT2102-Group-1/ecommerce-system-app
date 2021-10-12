@@ -70,8 +70,14 @@ def requestService():
   def onClick(event):
     showDetails()
 
+  def redirectToMenu():
+    window.destroy()
+    from view.Customer.CustomerMenu import customerMenu
+    customerMenu()
+
   if (not bool(options)):
     tk.messagebox.showerror("Error","Unable to Request Service. You have not purchased any items.")
+    redirectToMenu()
   else:
     # Dropdown Menu of Purchased Item
     dropdown_box = ttk.Combobox(request_frame, state="readonly",value=options)
@@ -86,11 +92,6 @@ def requestService():
   tk.Label(request_frame, text=" ", bg="#F9FBF2").grid(row=4, column=0)
   tk.Label(request_frame, text=" ", bg="#F9FBF2").grid(row=6, column=0)
   tk.Label(request_frame, text=" ", bg="#F9FBF2").grid(row=8, column=0)
-
-  def redirectToMenu():
-    window.destroy()
-    from view.Customer.CustomerMenu import customerMenu
-    customerMenu()
 
   tk.Button(request_frame, text="Return to Menu", bg='#fbf2fa', command = redirectToMenu).grid(row=9, column=1, sticky="E")
 
