@@ -71,73 +71,6 @@ def productSearch():
     # CALL BACKEND --------------------------
     productList = Connection().customerSearch(dict)
 
-    # DUMMY DATA WE DO NOT NEED TO CARE ABOUT EVENTUALLY -----
-    # productList = [
-    #   ["Light1", "Lights", "$50", "12 Months", [
-    #       {"ItemID":"1001", "Color":"White", "Factory":"Malaysia", "PowerSupply":"Battery", "ProductionYear":"2014"
-    #       },
-    #       {"ItemID":"1002", "Color":"Blue", "Factory":"Malaysia", "PowerSupply":"USB", "ProductionYear":"2016"
-    #       },
-    #       {"ItemID":"1003", "Color":"White", "Factory":"Philippines", "PowerSupply":"USB", "ProductionYear":"2020"
-    #       }
-    #     ]
-    #   ],
-    #   ["Light2", "Lights", "$60", "6 Months", [
-    #     {"ItemID":"1283", "Color":"White", "Factory":"Malaysia", "PowerSupply":"Battery", "ProductionYear":"2016"
-    #       },
-    #       {"ItemID":"1293", "Color":"Yellow", "Factory":"China", "PowerSupply":"USB", "ProductionYear":"2017"
-    #       },
-    #       {"ItemID":"1296", "Color":"Green", "Factory":"Philippines", "PowerSupply":"Battery", "ProductionYear":"2019"
-    #       }
-    #     ]
-    #   ],
-    #   ["SmartHome1", "Lights", "$70", "3 Months", [
-    #       {"ItemID":"1374", "Color":"Black", "Factory":"China", "PowerSupply":"Battery", "ProductionYear":"2017"
-    #       },
-    #       {"ItemID":"1379", "Color":"White", "Factory":"Malaysia", "PowerSupply":"USB", "ProductionYear":"2015"
-    #       },
-    #       {"ItemID":"1389", "Color":"Yellow", "Factory":"China", "PowerSupply":"USB", "ProductionYear":"2014"
-    #       }
-    #     ]
-    #   ],
-    #   ["Safe1", "Locks", "$100", "4 Months", [
-    #       {"ItemID":"1423", "Color":"White", "Factory":"China", "PowerSupply":"Battery", "ProductionYear":"2017"
-    #       },
-    #       {"ItemID":"1436", "Color":"Blue", "Factory":"Malaysia", "PowerSupply":"Battery", "ProductionYear":"2020"
-    #       },
-    #       {"ItemID":"1493", "Color":"Black", "Factory":"Philippines", "PowerSupply":"USB", "ProductionYear":"2019"
-    #       }
-    #     ]
-    #   ],
-    #   ["Safe2", "Locks", "$50", "17 Months", [
-    #       {"ItemID":"1542", "Color":"Yellow", "Factory":"Malaysia", "PowerSupply":"Battery", "ProductionYear":"2014"
-    #       },
-    #       {"ItemID":"1554", "Color":"Blue", "Factory":"Philippines", "PowerSupply":"USB", "ProductionYear":"2016"
-    #       },
-    #       {"ItemID":"1567", "Color":"Green", "Factory":"Philippines", "PowerSupply":"USB", "ProductionYear":"2020"
-    #       }
-    #     ]
-    #   ],
-    #   ["Safe3", "Locks", "$50", "12 Months", [
-    #       {"ItemID":"1684", "Color":"White", "Factory":"Malaysia", "PowerSupply":"Battery", "ProductionYear":"2014"
-    #         },
-    #         {"ItemID":"1693", "Color":"Blue", "Factory":"China", "PowerSupply":"USB", "ProductionYear":"2017"
-    #         },
-    #         {"ItemID":"1699", "Color":"Black", "Factory":"Philippines", "PowerSupply":"USB", "ProductionYear":"2015"
-    #         }
-    #     ]
-    #   ],
-    #   ["SmartHome1", "Locks", "$50", "6 Months", [
-    #     {"ItemID":"1783", "Color":"White", "Factory":"Malaysia", "PowerSupply":"Battery", "ProductionYear":"2019"
-    #       },
-    #       {"ItemID":"1788", "Color":"Blue", "Factory":"Malaysia", "PowerSupply":"USB", "ProductionYear":"2016"
-    #       },
-    #       {"ItemID":"1790", "Color":"Green", "Factory":"China", "PowerSupply":"Battery", "ProductionYear":"2015"
-    #       }
-    #     ]
-    #   ]
-    # ]
-
     displaySearchResultsandItem(productList)
   
   def displaySearchResultsandItem(productList):
@@ -179,10 +112,15 @@ def productSearch():
     tk.Label(display_frame, text=" ", bg="#F9FBF2").grid(row=1)
 
     print(productList) # DEBUGGING, REMOVE LATER
-    displaySearchItems(productList)
+    if (not bool(productList)):
+      tk.messagebox.showerror("Error", "No items matching that search were found.")
+    else:
+      window.update()
+      displaySearchItems(productList)
 
   # Display search items
   def displaySearchItems(productList):
+    # window.update()
     count = 2
     for modelDict in productList:     
       tk.Label(display_frame, bg="#F9FBF2", text="Model: " + modelDict['model'] + ", Category: " + modelDict['category'] + ", Price: " + str(modelDict['price']) + ", Warranty: " + str(modelDict['warranty'])).grid(row=count, column=0, columnspan=4)

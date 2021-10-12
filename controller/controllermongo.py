@@ -86,10 +86,12 @@ class Mongo:
         cursor = self.collection.aggregate(pipeline)
 
         results = list(cursor)  # convert the documents object into a list
+        if (not bool(results)):
+            return []
+        
         df = pd.DataFrame(results)
         df.rename(columns={'_id': 'productId'}, inplace=True)
         df.drop(columns=['productId', 'numItemsInStock'], inplace=True)
-
         return df.to_dict('records')
 
 
