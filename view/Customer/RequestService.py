@@ -56,7 +56,7 @@ def requestService():
     for item in unrequestedList:
       if str(item['itemId']) == dropdown_box.get():
         # details = "Selected Item: " + item['itemId'] + "\n" + "Warranty: " + item['modelWarranty'] + "\n" + "Amount Payable: " + item['modelCost']
-        details = "Selected Item: %d\nWarranty: %d" % (item['itemId'], item['modelWarranty'])
+        details = "Selected Item: %d\nWarranty: %d Months" % (item['itemId'], item['modelWarranty'])
         break
 
     # Print out Data
@@ -81,7 +81,7 @@ def requestService():
   else:
     # Dropdown Menu of Purchased Item
     dropdown_box = ttk.Combobox(request_frame, state="readonly",value=options)
-    dropdown_box.current(0)
+    # dropdown_box.current(0)
     dropdown_box.bind("<<ComboboxSelected>>", onClick)
     dropdown_box.grid(row=3, column=0, sticky="W")
   
