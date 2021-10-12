@@ -52,7 +52,7 @@ def requestService():
   def showDetails():
     # Retrieve Data
     for item in unrequestedList:
-      if item['itemId'].__eq__(dropdown_box.get()):
+      if item['itemId'] == dropdown_box.get():
         # details = "Selected Item: " + item['itemId'] + "\n" + "Warranty: " + item['modelWarranty'] + "\n" + "Amount Payable: " + item['modelCost']
         details = "Selected Item: %d\nWarranty: %d\nAmount Payable: %d" % (item['itemId'], item['modelWarranty'], item['modelCost'])
     
