@@ -293,6 +293,18 @@ class Connection:
         # BECAUSE we follow the design sent into the group drawn by hongpei sent by megan
         return self.mongodb.adminSearch(selection)
 
+    def findItem(self, itemId):
+        if itemId == None:
+            return []
+        return pd.read_sql_query(
+            '''SELECT i.itemId AS ItemID, m.modelName AS Model, m.categoryName AS Category,
+            CONCAT("$", m.modelPrice) AS Price, CONCAT("$", m.modelCost) AS Cost, i.color AS Color,
+            i.factory AS Factory, i.powerSupply AS PowerSupply, i.productionYear AS ProductionYear,
+            i.purchaseStatus AS PurchaseStatus, CONCAT(m.modelWarranty, " Months") AS Warranty 
+            FROM Item AS i INNER JOIN Model AS m WHERE i.productId = m.productId AND i.itemId = %s;''' % (itemId),
+            self.connection).to_dict('records')
+        # return self.mongodb.findItem(itemId)
+
     # -------------------------------------------------##--View Service List Page--#-----------------------------------------------
     # Display all past service sorted based on service status (awaiting approval on top, in progress in the middle, completed at the bottom),
     # then sorted by service id (decreasing order, largest which is the latest service is on top)

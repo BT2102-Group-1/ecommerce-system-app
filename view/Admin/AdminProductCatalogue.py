@@ -274,26 +274,27 @@ def adminProductCatalogue():
 
   # Find Item
   def findAndDisplayItem():
-
    
     # CALL BACKEND -------------------------- 
-    # itemDetails = findItem(chosenItemId.get())
+    itemDetails = Connection().findItem(chosenItemId.get())
+    print(itemDetails)
 
     # DUMMY DATA for above method
-    itemDetails = {"ItemID":"1001", "Model": "Lights1", "Category": "Lights", "Price": "$50", "Cost": "$20", "Color":"White", "Factory":"Malaysia", "PowerSupply":"Battery", "ProductionYear":"2014", "PurchaseStatus": "Unsold", "Warranty": "12 Months"}
+    # itemDetails = {"ItemID":"1001", "Model": "Lights1", "Category": "Lights", "Price": "$50", "Cost": "$20", "Color":"White", "Factory":"Malaysia", "PowerSupply":"Battery", "ProductionYear":"2014", "PurchaseStatus": "Unsold", "Warranty": "12 Months"}
 
     if bool(itemDetails):
+      itemDetails = itemDetails[0]
       # Display Data
       tk.Label(search2_frame, text=" ", bg="#F9FBF2").grid(row=3)
     
-      tk.Label(search2_frame, bg="#F9FBF2", text="Item ID: " + itemDetails.get('ItemID')).grid(row=4, column=0, sticky="W")
+      tk.Label(search2_frame, bg="#F9FBF2", text="Item ID: " + str(itemDetails.get('ItemID'))).grid(row=4, column=0, sticky="W")
       tk.Label(search2_frame, bg="#F9FBF2", text="Model: " + itemDetails.get('Model')).grid(row=5, column=0, sticky="W")
       tk.Label(search2_frame, bg="#F9FBF2", text="Category: " + itemDetails.get('Category')).grid(row=6, column=0, sticky="W")
 
       tk.Label(search2_frame, bg="#F9FBF2", text="Color: " + itemDetails.get('Color')).grid(row=4, column=1, sticky="W")
       tk.Label(search2_frame, bg="#F9FBF2", text="Factory: " + itemDetails.get('Factory')).grid(row=5, column=1, sticky="W")
       tk.Label(search2_frame, bg="#F9FBF2", text="Power Supply: " + itemDetails.get('PowerSupply')).grid(row=6, column=1, sticky="W")
-      tk.Label(search2_frame, bg="#F9FBF2", text="Production Year: " + itemDetails.get('ProductionYear')).grid(row=7, column=1, sticky="W")
+      tk.Label(search2_frame, bg="#F9FBF2", text="Production Year: " + str(itemDetails.get('ProductionYear'))).grid(row=7, column=1, sticky="W")
 
       tk.Label(search2_frame, text="          ", bg="#F9FBF2").grid(column=2)
       tk.Label(search2_frame, bg="#F9FBF2", text="Price: " + itemDetails.get('Price')).grid(row=4, column=3, sticky="W")

@@ -99,7 +99,7 @@ def listOfRequest():
 
     if response == 1:
       # CALL BACKEND --------------------------
-      #onCancelRequest(selectedRowDictionary['values'][0])
+      Connection().onCancelRequest(selectedRowDictionary['values'][0])
       
       # Not necessary, printing for our reference only
       print("Request Cancelled")
@@ -123,7 +123,7 @@ def listOfRequest():
     if (len(selectedRowDictionary) == 0):
       tk.messagebox.showwarning("Warning", "No Items Selected")
     else:
-      if (selectedRowDictionary['values'][4] == ("Submitted" and "Submitted and Waiting for payment")):
+      if (selectedRowDictionary['values'][4] == "Submitted" or selectedRowDictionary['values'][4] == "Submitted and Waiting for payment"):
         cancel()
       elif selectedRowDictionary['values'][4] == "Cancelled":
         tk.messagebox.showerror("Error", "Service Request has already been cancelled!")
