@@ -57,7 +57,7 @@ def listOfRequest():
   tv.bind('<ButtonRelease-1>', selectItem)
 
   # CALL BACKEND --------------------------
-  requestList = Connection.retrieveRequests(GlobalVariables.customerID)
+  requestList = Connection().retrieveRequests(GlobalVariables.customerID)
 
   # DUMMY DATA -------
   requestList = [

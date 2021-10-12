@@ -48,7 +48,7 @@ def requestService():
 
     if response == 1:
       # CALL BACKEND -------------------------- 
-      successful = Connection.submitRequest(GlobalVariables.customerID, dropdown_box.get())
+      successful = Connection().submitRequest(GlobalVariables.customerID, dropdown_box.get())
       if not successful:
         tk.messagebox.showerror("Error","Unable to Request Service. Item was not purchased or Item already has a existing request")
       else:
