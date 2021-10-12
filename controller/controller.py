@@ -294,7 +294,7 @@ class Connection:
         return self.mongodb.adminSearch(selection)
 
     def findItem(self, itemId):
-        if itemId == None:
+        if len(itemId) == 0:
             return []
         return pd.read_sql_query(
             '''SELECT i.itemId AS ItemID, m.modelName AS Model, m.categoryName AS Category,
