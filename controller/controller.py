@@ -181,7 +181,7 @@ class Connection:
     def retrieveRequests(self, customerId):
         # return all products with A REQUEST in the form of an array, consisting of requests objects
         return pd.read_sql_query(
-            '''SELECT r.requestId, r.requestDate, p.serviceFee, r.requestStatus, r.itemId 
+            '''SELECT r.requestId, r.requestDate, IFNULL(p.serviceFee, 0.00) AS serviceFee, r.requestStatus, r.itemId 
             FROM Request r 
             LEFT JOIN Payment p ON r.requestId = p.requestId 
             WHERE r.customerId = %d 

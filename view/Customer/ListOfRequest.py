@@ -64,7 +64,7 @@ def listOfRequest():
     requestId = request.get('requestId')
     itemId = request.get('itemId')
     requestDate = request.get('requestDate')
-    serviceFee =  "-" if math.isnan(request.get('serviceFee')) else request.get('serviceFee')
+    serviceFee =  request.get('serviceFee')
     requestStatus = request.get('requestStatus')
 
     if requestStatus == "Submitted and Waiting for payment":
