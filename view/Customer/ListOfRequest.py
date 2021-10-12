@@ -3,6 +3,7 @@ from tkinter import ttk
 from tkinter import messagebox
 
 from view import GlobalVariables
+from controller.controller import Connection
 
 def listOfRequest():
   window = tk.Tk()

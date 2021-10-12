@@ -3,6 +3,7 @@ from tkinter import ttk
 
 from view import GlobalVariables 
 from view.Customer.ListOfRequest import listOfRequest
+from controller.controller import Connection
 
 def requestService():
   window = tk.Tk()
