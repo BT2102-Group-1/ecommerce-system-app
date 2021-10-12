@@ -19,10 +19,11 @@ def requestService():
   # CALL BACKEND -------------------------- 
   unrequestedDf = Connection().getUnrequestedItems(GlobalVariables.customerID)
   unrequestedList = unrequestedDf.to_dict('records')
-  print(unrequestedList)
   
   # Drop Down Box Options
-  options = [item['itemId'] for item in unrequestedList]
+  options = []
+  for item in unrequestedList:
+    options.append(item.get('itemId'))
   print(options)
 
   # Redirect to List Of Request

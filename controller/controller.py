@@ -136,36 +136,34 @@ class Connection:
     def submitRequest(self, customerId, itemId):
         # change request status, generate service if under warranty
         # requests can only be submitted if the item has been purchased by the customer previously, and there isn't an existing request
-        requestStatus = "Submitted"
         item_df = pd.read_sql_query(
-            '''SELECT i.purchaseDate, i.customerId, m.modelCost, m.modelWarranty, r.requestStatus 
+            '''SELECT i.purchaseDate, i.customerId, m.modelCost, m.modelWarranty, r.requestStatus, DATE_ADD(i.purchaseDate, INTERVAL m.modelWarranty MONTH) AS dateInterval
             FROM Item i 
             INNER JOIN Model m ON i.productId = m.productId 
-            LEFT JOIN Request r ON i.itemId = r.itemId 
-            WHERE i.itemId = %s'''
+            LEFT JOIN Request r ON i.itemId = r.itemId AND r.requestStatus != 'Completed' OR 'Cancelled'
+            WHERE i.itemId = %s
+            LIMIT 1'''
             % itemId,
             self.connection,
-            parse_dates=['purchaseDate'])
-        noActiveRequest = all([((request is None) or request.__eq__("Canceled") or request.__eq__("Completed")) for request in item_df['requestStatus']])
-        itemPurchased = all([(item_df['customerId'][i].__eq__(customerId)) and (not item_df['purchaseDate'].isnull()[i]) for i in range(len(item_df['customerId']))])
+            parse_dates=['purchaseDate', 'dateInterval'])
+        
+        itemPurchased = item_df['customerId'][0].__eq__(customerId) and (not item_df['purchaseDate'].isnull()[0])
         # if warranty has expired, create payment
-        if ((not item_df.empty) and itemPurchased and noActiveRequest):
+        if ((not item_df.empty) and itemPurchased and (item_df['requestStatus'][0] is None)):
             # generate request
             self.connection.execute(
                 '''INSERT INTO REQUEST (requestDate, requestStatus, customerId, itemId)
-                VALUES (CURDATE(), "%s", %d, %s)'''
-                % (requestStatus, customerId, itemId))
-
-            wExpDate = item_df["purchaseDate"][0] + timedelta(days=item_df["modelWarranty"][0].item() * 30)
-            if datetime.now() > wExpDate:
+                VALUES (CURDATE(), "Submitted", %d, %s)'''
+                % (customerId, itemId))
+            if datetime.now() > item_df['dateInterval'][0]:
                 #get request
-                request_df = pd.read_sql_query('SELECT r.requestId FROM Request r WHERE r.itemId = %s' % itemId, self.connection)
+                request_df = pd.read_sql_query('SELECT MAX(r.requestId) AS requestId FROM Request r WHERE r.itemId = %s' % itemId, self.connection)
                 requestId = request_df["requestId"][0]
                 serviceFee = 40.00 + 0.2 * item_df["modelCost"][0].item()
                 self.connection.execute(
                     'INSERT INTO Payment (requestId, serviceFee, paymentDate) VALUES (%d, %s, CURDATE())'
                     % (requestId, '{0:.2f}'.format(serviceFee)))
-                requestStatus = "Submitted and Waiting for payment"
+                self.connection.execute('UPDATE Request SET requestStatus = "Submitted and Waiting for payment" WHERE requestId = %d' % requestId)
             
             # generate service
             self.connection.execute(
