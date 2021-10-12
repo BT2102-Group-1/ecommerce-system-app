@@ -287,19 +287,19 @@ def adminProductCatalogue():
       # Display Data
       tk.Label(search2_frame, text=" ", bg="#F9FBF2").grid(row=3)
     
-      tk.Label(search2_frame, bg="#F9FBF2", text="Item ID: " + str(itemDetails.get('ItemID'))).grid(row=4, column=0, sticky="W")
+      tk.Label(search2_frame, bg="#F9FBF2", text="Item ID: " + itemDetails.get('ItemID')).grid(row=4, column=0, sticky="W")
       tk.Label(search2_frame, bg="#F9FBF2", text="Model: " + itemDetails.get('Model')).grid(row=5, column=0, sticky="W")
       tk.Label(search2_frame, bg="#F9FBF2", text="Category: " + itemDetails.get('Category')).grid(row=6, column=0, sticky="W")
 
       tk.Label(search2_frame, bg="#F9FBF2", text="Color: " + itemDetails.get('Color')).grid(row=4, column=1, sticky="W")
       tk.Label(search2_frame, bg="#F9FBF2", text="Factory: " + itemDetails.get('Factory')).grid(row=5, column=1, sticky="W")
       tk.Label(search2_frame, bg="#F9FBF2", text="Power Supply: " + itemDetails.get('PowerSupply')).grid(row=6, column=1, sticky="W")
-      tk.Label(search2_frame, bg="#F9FBF2", text="Production Year: " + str(itemDetails.get('ProductionYear'))).grid(row=7, column=1, sticky="W")
+      tk.Label(search2_frame, bg="#F9FBF2", text="Production Year: " + itemDetails.get('ProductionYear')).grid(row=7, column=1, sticky="W")
 
       tk.Label(search2_frame, text="          ", bg="#F9FBF2").grid(column=2)
-      tk.Label(search2_frame, bg="#F9FBF2", text="Price: " + itemDetails.get('Price')).grid(row=4, column=3, sticky="W")
-      tk.Label(search2_frame, bg="#F9FBF2", text="Service Cost: " + itemDetails.get('Cost')).grid(row=5, column=3, sticky="W")
-      tk.Label(search2_frame, bg="#F9FBF2", text="Warranty: " + itemDetails.get('Warranty')).grid(row=6, column=3, sticky="W")
+      tk.Label(search2_frame, bg="#F9FBF2", text="Price: $" + str(itemDetails.get('Price'))).grid(row=4, column=3, sticky="W")
+      tk.Label(search2_frame, bg="#F9FBF2", text="Service Cost: $" + str(itemDetails.get('Cost'))).grid(row=5, column=3, sticky="W")
+      tk.Label(search2_frame, bg="#F9FBF2", text="Warranty: " + str(itemDetails.get('Warranty')) + " Months").grid(row=6, column=3, sticky="W")
       tk.Label(search2_frame, bg="#F9FBF2", text="Purchase Status: " + itemDetails.get('PurchaseStatus')).grid(row=7, column=3, sticky="W")
     else:
       tk.messagebox.showerror("Error", "Wrong Item ID / No Such Item ID")
