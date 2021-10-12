@@ -51,6 +51,7 @@ def productSearch():
 
   # Create dictionary with checked fields and call cusomter search function
   def onSearch():
+
     dict = {
       'Model': [],
       'Category': [],
@@ -72,8 +73,13 @@ def productSearch():
     productList = Connection().customerSearch(dict)
 
     displaySearchResultsandItem(productList)
+
+    # Disable Search Button
+    if (buttonsToDisable[0]['state'] == tk.NORMAL):
+        buttonsToDisable[0].config(state=tk.DISABLED)
   
   def displaySearchResultsandItem(productList):
+
     # Purchase Item
     def purchaseItem():
       # LOOP THROUGH dictionary to see if item exists in the filtered portion
@@ -127,7 +133,7 @@ def productSearch():
 
   # Display search items
   def displaySearchItems(productList):
-    # window.update()
+
     count = 2
     for modelDict in productList:     
       tk.Label(display_frame, bg="#F9FBF2", text="Model: " + modelDict['model'] + ", Category: " + modelDict['category'] + ", Price: " + str(modelDict['price']) + ", Warranty: " + str(modelDict['warranty'])).grid(row=count, column=0, columnspan=4)
@@ -237,7 +243,10 @@ def productSearch():
   # Advance Search Options Button 
   tk.Button(search_frame, text="Advance Search", bg='#fbf2fa', command=onClick).grid(sticky="W", row=2, column=8)
   # Search Button
-  tk.Button(search_frame, text="Search", bg='#fbf2fa', command=onSearch).grid(sticky="W", row=15, column=8)
+  global buttonsToDisable 
+  buttonsToDisable = []
+  searchButton = tk.Button(search_frame, text="Search", bg='#fbf2fa', command=onSearch, state=tk.NORMAL).grid(sticky="W", row=15, column=8)
+  buttonsToDisable.append(searchButton)
 
   # Styling Spaces
   tk.Label(search_frame, text="   ", bg="#F9FBF2").grid(row=1, column=0)

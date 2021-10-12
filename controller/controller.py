@@ -194,6 +194,13 @@ class Connection:
                 "Canceled")'''
             % (customerId), 
             self.connection)
+    
+    # Cancel all service requests that are past 10 days after a request that requires is made
+    def updateDatabase(self):
+        self.connection.execute('SET SQL_SAFE_UPDATES = 0;')
+        self.connection.execute(
+            '''UPDATE Request SET requestStatus = 'Canceled' WHERE requestStatus = 'Submitted and Waiting for payment' AND CURDATE() > DATE_ADD(requestDate, INTERVAL 10 DAY);''')
+
 
 
     def onPay(self, requestId):  # changed from itemId to requestId
@@ -364,6 +371,7 @@ if __name__ == '__main__':
     print(db.engine)
     print(db.initialiseDatabase())
     print(db.requestServices())
+    db.updateDatabase()
     # print(db.viewInventory())
     # print(db.adminSearch({"model": ["Light1", "Light2", "SmartHome1"]}))
     # print(pd.read_sql('customer', db.connection))

@@ -56,6 +56,7 @@ def listOfRequest():
   tv.bind('<ButtonRelease-1>', selectItem)
 
   # CALL BACKEND --------------------------
+  Connection().updateDatabase()
   requestListDf = Connection().retrieveRequests(GlobalVariables.customerID)
   requestList = requestListDf.to_dict('records')
 
