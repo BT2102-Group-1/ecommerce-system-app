@@ -127,11 +127,13 @@ def adminServiceList():
       if (serviceStatusofRowSelected == "Waiting for approval"):
         response = tk.messagebox.askokcancel("Approve Service", "Are you sure you want to approve this service request?")
         if response == 1:
-            print("Approved service")
+            
             ## CALL BACKEND --------------------------
             # add "serviceId = rowDictionary['values'][0]"
             # add "controller.approveServiceRequest(GlobalVariables.adminId, serviceId)"
             # Might need try catch for this if update fails
+            Connection().approveServiceRequest(GlobalVariables.adminId, serviceId)
+            print("Approved service")
             ## ---------------------------------------
         else:
             print("Cancelled approve process")
@@ -153,6 +155,7 @@ def adminServiceList():
             # add "serviceId = rowDictionary['values'][0]"
             # add "controller.completeServiceRequest(serviceId)"
             # Might need try catch for this if update fails
+            Connection().completeServiceRequest(serviceId)
             ## ---------------------------------------
         else:
             print("Cancelled process")

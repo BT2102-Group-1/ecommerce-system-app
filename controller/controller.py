@@ -94,11 +94,11 @@ class Connection:
             # edit attributes of the item in the database - change unsold to sold and input customerId, record purchase date (impt for servicing later)
             # check if item is sold
         item_df = pd.read_sql_query(
-            'SELECT i.itemId FROM Item i WHERE i.itemId = %d AND i.purchaseStatus = "Unsold"' 
+            'SELECT i.itemId FROM Item i WHERE i.itemId = %s AND i.purchaseStatus = "Unsold"' 
             % itemId, self.connection)
         if not item_df.empty:
             self.connection.execute(
-                'UPDATE Item i SET i.purchaseStatus = "Sold", i.customerId = %d, i.purchaseDate = CURDATE() WHERE i.itemId = %d'
+                'UPDATE Item i SET i.purchaseStatus = "Sold", i.customerId = %d, i.purchaseDate = CURDATE() WHERE i.itemId = %s'
                 % (customerId, itemId))
             return True
         else:
@@ -142,25 +142,24 @@ class Connection:
             FROM Item i 
             INNER JOIN Model m ON i.productId = m.productId 
             LEFT JOIN Request r ON i.itemId = r.itemId 
-            WHERE i.itemId = %d'''
+            WHERE i.itemId = %s'''
             % itemId,
             self.connection,
             parse_dates=['purchaseDate'])
-        request = item_df['requestStatus'][0]
-        noActiveRequest = (request is None) or request.__eq__("Canceled") or request.__eq__("Completed")
-        itemPurchased = (item_df['customerId'][0].__eq__(customerId)) and (not item_df['purchaseDate'].isnull()[0])
+        noActiveRequest = all([((request is None) or request.__eq__("Canceled") or request.__eq__("Completed")) for request in item_df['requestStatus']])
+        itemPurchased = all([(item_df['customerId'][i].__eq__(customerId)) and (not item_df['purchaseDate'].isnull()[i]) for i in range(len(item_df['customerId']))])
         # if warranty has expired, create payment
         if ((not item_df.empty) and itemPurchased and noActiveRequest):
             # generate request
             self.connection.execute(
                 '''INSERT INTO REQUEST (requestDate, requestStatus, customerId, itemId)
-                VALUES (CURDATE(), "%s", %d, %d)'''
+                VALUES (CURDATE(), "%s", %d, %s)'''
                 % (requestStatus, customerId, itemId))
 
             wExpDate = item_df["purchaseDate"][0] + timedelta(days=item_df["modelWarranty"][0].item() * 30)
             if datetime.now() > wExpDate:
                 #get request
-                request_df = pd.read_sql_query('SELECT r.requestId FROM Request r WHERE r.itemId = %d' % itemId, self.connection)
+                request_df = pd.read_sql_query('SELECT r.requestId FROM Request r WHERE r.itemId = %s' % itemId, self.connection)
                 requestId = request_df["requestId"][0]
                 serviceFee = 40.00 + 0.2 * item_df["modelCost"][0].item()
                 self.connection.execute(
@@ -171,7 +170,7 @@ class Connection:
             # generate service
             self.connection.execute(
                 '''INSERT INTO Service(serviceStatus, adminId, requestId) 
-                VALUES ("Waiting for approval", NULL, (SELECT requestId FROM Request WHERE itemId = %d))'''
+                VALUES ("Waiting for approval", NULL, (SELECT MAX(requestId) FROM Request WHERE itemId = %s))'''
                 % itemId)
             return True
         return False
