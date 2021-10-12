@@ -3,6 +3,8 @@ from tkinter import ttk
 
 from view import GlobalVariables
 
+from controller.controller import Connection
+
 def purchaseHistory():
   window = tk.Tk()
   window.title("Purchase History")
@@ -14,22 +16,10 @@ def purchaseHistory():
   frame.grid(row=0, column=0)
 
   # CALL BACKEND -------------------------- 
-  # purchaseHistory = getPurchaseHistory(GlobalVariables.customerID)
+  purchaseHistoryDf = Connection().getPurchaseHistory(GlobalVariables.customerID)
+  purchaseHistory = purchaseHistoryDf.to_dict('records')
   # return format should be like the dummy data below
-  # DUMMY DATA THAT"LL BE DELETED>.. -----
-  purchaseHistory = [
-    {"itemId":"1001", "purchaseDate": "10/10/2021", "modelPrice": "$60", "modelName": "Light2", "categoryName": "Lights", "color":"White", "factory":"Malaysia", "powerSupply":"Battery", "productionYear":"2014"
-    },
-    {"itemId":"4523", "purchaseDate": "10/10/2021", "modelPrice": "$50", "modelName": "Light1", "categoryName": "Lights", "color":"White", "factory":"Malaysia", "powerSupply":"Battery", "productionYear":"2014"
-    },
-    {"itemId":"4368", "purchaseDate": "10/10/2021", "modelPrice": "$100", "modelName": "SmartHome1", "categoryName": "Lights", "color":"White", "factory":"Malaysia", "powerSupply":"Battery", "productionYear":"2014"
-    },
-    {"itemId":"2597", "purchaseDate": "10/10/2021", "modelPrice": "$50", "modelName": "Light1", "categoryName": "Lights", "color":"White", "factory":"Malaysia", "powerSupply":"Battery", "productionYear":"2014"
-    },
-    {"itemId":"6364", "purchaseDate": "10/10/2021", "modelPrice": "$50", "modelName": "Light1", "categoryName": "Lights", "color":"White", "factory":"Malaysia", "powerSupply":"Battery", "productionYear":"2014"
-    }
-  ]
-
+  
   # Table View 
   table = ttk.Treeview(frame)
   ttk.Style().configure("Treeview", background="#d9e9f9", 

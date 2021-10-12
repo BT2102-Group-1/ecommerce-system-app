@@ -18,15 +18,13 @@ def listOfRequest():
   # Add Table
   tv = ttk.Treeview(frame)
   tv['columns']=('Request ID', 'Item ID', 'Request Date', 'Service Fee','Request Status', 'Paid', 'Cancelled' )
-  ttk.Style().configure("Treeview", background="#d9e9f9", 
-  foreground="black", fieldbackground="d9e9f9")
+  ttk.Style().configure("Treeview", background="#d9e9f9", foreground="black", fieldbackground="d9e9f9")
   ttk.Style().configure('Treeview.Heading', background='#84a5ce',   foreground='black')
 
   # Scroll Bar
   verscrlbar = ttk.Scrollbar(frame, orient="vertical", command = tv.yview)
   verscrlbar.grid(row=0, column=5, sticky ='nes')
   tv.configure(yscrollcommand = verscrlbar.set)
-
 
   selectedRowDictionary = {}
 
@@ -57,25 +55,16 @@ def listOfRequest():
   tv.bind('<ButtonRelease-1>', selectItem)
 
   # CALL BACKEND --------------------------
-  requestList = Connection().retrieveRequests(GlobalVariables.customerID)
-
-  # DUMMY DATA -------
-  requestList = [
-    {"requestId": "93821", "itemId": 1, "requestDate": "12/06/21", "serviceFee": 9, "requestStatus": "Submitted"},
-    {"requestId": "54345", "itemId": 2, "requestDate": "27/06/21", "serviceFee": 400, "requestStatus": "Submitted and Waiting for payment"},
-    {"requestId": "23654","itemId": 3, "requestDate": "29/05/21", "serviceFee": 50, "requestStatus": "Completed"},
-    {"requestId": "56546", "itemId": 4, "requestDate": "10/10/21", "serviceFee": 250, "requestStatus": "Cancelled"},
-    {"requestId": "54287", "itemId": 5, "requestDate": "12/02/21", "serviceFee": 20, "requestStatus": "In Progress"},
-    {"requestId": "35624", "itemId": 6, "requestDate": "03/05/21", "serviceFee": 0, "requestStatus": "Approved"}
-  ]
+  requestListDf = Connection().retrieveRequests(GlobalVariables.customerID)
+  requestList = requestListDf.to_dict('records')
 
   # Populating Table
-  for dict in requestList:
-    requestId = dict.get('requestId')
-    itemId = dict.get('itemId')
-    requestDate = dict.get('requestDate')
-    serviceFee = dict.get('serviceFee')
-    requestStatus = dict.get('requestStatus')
+  for request in requestList:
+    requestId = request.get('requestId')
+    itemId = request.get('itemId')
+    requestDate = request.get('requestDate')
+    serviceFee = request.get('serviceFee')
+    requestStatus = request.get('requestStatus')
 
     if requestStatus == "Submitted and Waiting for payment":
       tv.insert(parent='', index=itemId, iid=itemId, text='', values=(requestId, itemId, requestDate, serviceFee, requestStatus, "-", "-")) 
@@ -94,7 +83,7 @@ def listOfRequest():
 
     if response == 1:
       # CALL BACKEND --------------------------
-      # onPay(selectedRowDictionary['values'][0])
+      Connection().onPay(selectedRowDictionary['values'][0])
 
       # Not necessary, printing for our reference only
       print("Paid!")

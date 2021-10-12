@@ -3,6 +3,7 @@ from tkinter import ttk
 
 from view import GlobalVariables 
 from view.Customer.ListOfRequest import listOfRequest
+
 from controller.controller import Connection
 
 def requestService():
@@ -16,20 +17,8 @@ def requestService():
   request_frame.grid(row=0)
 
   # CALL BACKEND -------------------------- 
-  # unrequestedList = getUnrequestedItems(GlobalVariables.customerID)
-  # format should be the same as the dummy data format
-
-  # DUMMY DATA TO BE DELETED 
-  unrequestedList = [
-    {"itemId": "1001", "modelName": "Lights1", "modelCost": "$100", "modelWarranty": "12 Months", "purchaseDate": "10/10/2020"
-    },
-    {"itemId": "1002", "modelName": "Lights1", "modelCost": "$120", "modelWarranty": "12 Months", "purchaseDate": "10/10/2020"
-    },
-    {"itemId": "1284", "modelName": "Lights1", "modelCost": "$150", "modelWarranty": "12 Months", "purchaseDate": "10/10/2020"
-    },
-    {"itemId": "1001", "modelName": "Lights1", "modelCost": "$200", "modelWarranty": "12 Months", "purchaseDate": "10/10/2020"
-    }
-  ]
+  unrequestedDf = Connection().getUnrequestedItems(GlobalVariables.customerID)
+  unrequestedList = unrequestedDf.to_dict('records')
   
   # Drop Down Box Options
   options = []
