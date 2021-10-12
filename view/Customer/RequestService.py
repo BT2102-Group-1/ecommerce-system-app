@@ -70,13 +70,16 @@ def requestService():
   def onClick(event):
     showDetails()
 
-  # Dropdown Menu of Purchased Item
-  dropdown_box = ttk.Combobox(request_frame, state="readonly",value=options)
-  dropdown_box.current(0)
-  dropdown_box.bind("<<ComboboxSelected>>", onClick)
-  dropdown_box.grid(row=3, column=0, sticky="W")
+  if (not bool(options)):
+    tk.messagebox.showerror("Error","Unable to Request Service. You have not purchased any items.")
+  else:
+    # Dropdown Menu of Purchased Item
+    dropdown_box = ttk.Combobox(request_frame, state="readonly",value=options)
+    dropdown_box.current(0)
+    dropdown_box.bind("<<ComboboxSelected>>", onClick)
+    dropdown_box.grid(row=3, column=0, sticky="W")
   
-  tk.Label(request_frame, text="Choose Item to Request for Service", bg="#F9FBF2").grid(row=1, column=0, sticky="W")
+    tk.Label(request_frame, text="Choose Item to Request for Service", bg="#F9FBF2").grid(row=1, column=0, sticky="W")
 
   # Styling Spaces
   tk.Label(request_frame, text=" ", bg="#F9FBF2").grid(row=2, column=0)
