@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 # from main import *
 import GlobalVariables 
+from controller.controller import Connection
 
 def customerRegister():
   root = tk.Tk()
@@ -66,7 +67,7 @@ def customerRegister():
   def registernow():
     # CALL BACKEND --------------------------
     # Register Customer --> method below
-    # GlobalVariables.customerID = registerCustomer(email_input.get(), pw_input.get(), name_input.get(), address_input.get(), phoneno_input.get(), gender_dropdown.get())
+    GlobalVariables.customerID = Connection().registerCustomer(email_input.get(), pw_input.get(), name_input.get(), address_input.get(), phoneno_input.get(), gender_dropdown.get())
 
     if (GlobalVariables.customerID >=0):
       root.destroy()

@@ -2,6 +2,7 @@ import tkinter as tk
 from Admin.AdminMenu import *
 from tkinter import messagebox
 import GlobalVariables
+from controller.controller import Connection
 
 def adminLogin():
 
@@ -35,17 +36,19 @@ def adminLogin():
   def verifyLogin():
     if (not username_verification.get() or not password_verification.get()):
       tk.messagebox.showerror("Error","Login Unsuccessful. Please ensure all fields are filled.")
-    #else:
-    ## CALL BACKEND --------------------------
-    # remove hardcoded "adminIdVerify = 1"
-    # add "GlobalVariables.adminId = controller.adminLogin(username_verification.get(), password_verification.get())""
-    ## ---------------------------------------
+    else:
+      ## CALL BACKEND --------------------------
+      # remove hardcoded "adminIdVerify = 1"
+      GlobalVariables.adminId = Connection().adminLogin(username_verification.get(), password_verification.get())
+      ## ---------------------------------------
       
-    GlobalVariables.adminId = 1 #HARDCODED DATA [REMOVE when linking to backend!!]
+    # GlobalVariables.adminId = 1 #HARDCODED DATA [REMOVE when linking to backend!!]
     if (GlobalVariables.adminId >= 0):
       redirectToAdminHome()
-    else:
-      messagebox.showerror("Login Unsuccessful","Error. Please check Admin ID or password again.")
+    elif (not username_verification.get() or not password_verification.get()):
+    # elif (GlobalVariables.adminId == -1):
+    # else:
+      tk.messagebox.showerror("Login Unsuccessful","Error. Please check Admin ID or password again.")
 
   tk.Button(frame, text = "Log In", bg='#fbf2fa', command = verifyLogin).pack(pady = 15)
 
