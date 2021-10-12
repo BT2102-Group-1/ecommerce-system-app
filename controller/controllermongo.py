@@ -143,7 +143,7 @@ class Mongo:
                     "numItemsInStock": {"$sum": "$Unsold"},
                     "numItemsSold": {"$sum": "$Sold"},
                     "warranty": {"$first": {"$first": "$Model_Item.Warranty (months)"}},
-                    "items": {"$push": {"ItemID": "$ItemID", "Color": "$Color", "Factory": "$Factory", "PowerSupply": "$PowerSupply", "ProductionYear": "$ProductionYear"}}
+                    "items": {"$push": {"ItemID": "$ItemID", "Color": "$Color", "Factory": "$Factory", "PowerSupply": "$PowerSupply", "ProductionYear": "$ProductionYear", "PurchaseStatus": "$PurchaseStatus"}}
                 }
             },
             {
