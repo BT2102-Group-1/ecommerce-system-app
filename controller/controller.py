@@ -296,6 +296,8 @@ class Connection:
         return self.mongodb.adminSearch(selection)
 
     def findItem(self, itemId):
+        if itemId == None:
+            return []
         return pd.read_sql_query(
             '''SELECT i.itemId AS ItemID, m.modelName AS Model, m.categoryName AS Category,
             CONCAT("$", m.modelPrice) AS Price, CONCAT("$", m.modelCost) AS Cost, i.color AS Color,
