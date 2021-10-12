@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
 import GlobalVariables
+from controller.controller import Connection
 
 def adminServiceList():
 
@@ -78,27 +79,27 @@ def adminServiceList():
   tv.heading('Completed', text='Completed', anchor=tk.CENTER)
   tv.bind('<ButtonRelease-1>', selectItem)
 
-  dicts = [ #HARD CODED DATA, REMOVE DATA and SET IT = controller.requestServices()
-    {"serviceId": 1, "itemId": 2, "customerId": 9, "serviceStatus": "Waiting for approval"},
-    {"serviceId": 2, "itemId": 2, "customerId": 9, "serviceStatus": "In progress"},
-    {"serviceId": 3, "itemId": 2, "customerId": 9, "serviceStatus": "Completed"},
-    {"serviceId": 4, "itemId": 2, "customerId": 9, "serviceStatus": "Waiting for approval"},
-    {"serviceId": 5, "itemId": 2, "customerId": 9, "serviceStatus": "Waiting for approval"},
-    {"serviceId": 6, "itemId": 2, "customerId": 9, "serviceStatus": "Waiting for approval"},
-    {"serviceId": 7, "itemId": 2, "customerId": 9, "serviceStatus": "Waiting for approval"},
-    {"serviceId": 8, "itemId": 2, "customerId": 9, "serviceStatus": "Waiting for approval"},
-    {"serviceId": 9, "itemId": 2, "customerId": 9, "serviceStatus": "Waiting for approval"},
-    {"serviceId": 10, "itemId": 2, "customerId": 9, "serviceStatus": "Waiting for approval"},
-    {"serviceId": 11, "itemId": 2, "customerId": 9, "serviceStatus": "Waiting for approval"},
-    {"serviceId": 12, "itemId": 2, "customerId": 9, "serviceStatus": "Waiting for approval"},
-    {"serviceId": 13, "itemId": 2, "customerId": 9, "serviceStatus": "Waiting for approval"},
-    {"serviceId": 14, "itemId": 2, "customerId": 9, "serviceStatus": "Waiting for approval"},
-    {"serviceId": 15, "itemId": 2, "customerId": 9, "serviceStatus": "Waiting for approval"}
-  ]
+  # dicts = [ #HARD CODED DATA, REMOVE DATA and SET IT = controller.requestServices()
+  #   {"serviceId": 1, "itemId": 2, "customerId": 9, "serviceStatus": "Waiting for approval"},
+  #   {"serviceId": 2, "itemId": 2, "customerId": 9, "serviceStatus": "In progress"},
+  #   {"serviceId": 3, "itemId": 2, "customerId": 9, "serviceStatus": "Completed"},
+  #   {"serviceId": 4, "itemId": 2, "customerId": 9, "serviceStatus": "Waiting for approval"},
+  #   {"serviceId": 5, "itemId": 2, "customerId": 9, "serviceStatus": "Waiting for approval"},
+  #   {"serviceId": 6, "itemId": 2, "customerId": 9, "serviceStatus": "Waiting for approval"},
+  #   {"serviceId": 7, "itemId": 2, "customerId": 9, "serviceStatus": "Waiting for approval"},
+  #   {"serviceId": 8, "itemId": 2, "customerId": 9, "serviceStatus": "Waiting for approval"},
+  #   {"serviceId": 9, "itemId": 2, "customerId": 9, "serviceStatus": "Waiting for approval"},
+  #   {"serviceId": 10, "itemId": 2, "customerId": 9, "serviceStatus": "Waiting for approval"},
+  #   {"serviceId": 11, "itemId": 2, "customerId": 9, "serviceStatus": "Waiting for approval"},
+  #   {"serviceId": 12, "itemId": 2, "customerId": 9, "serviceStatus": "Waiting for approval"},
+  #   {"serviceId": 13, "itemId": 2, "customerId": 9, "serviceStatus": "Waiting for approval"},
+  #   {"serviceId": 14, "itemId": 2, "customerId": 9, "serviceStatus": "Waiting for approval"},
+  #   {"serviceId": 15, "itemId": 2, "customerId": 9, "serviceStatus": "Waiting for approval"}
+  # ]
 
   ## CALL BACKEND --------------------------
   # remove hardcoded list of dictionaries above under variable "dicts"
-  # set "dicts = controller.requestServices()" [expecting to get a list of dictionaries]
+  dicts = Connection().requestServices()
   ## ---------------------------------------
 
   for dict in dicts:

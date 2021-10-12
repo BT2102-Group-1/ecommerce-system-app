@@ -3,6 +3,7 @@ import tkinter as tk
 from tkinter import messagebox
 import GlobalVariables 
 # import main as mainpage
+from controller.controller import Connection
 
 def customerLogin():
   window = tk.Tk()
@@ -41,10 +42,10 @@ def customerLogin():
     
     # Method below
     else:
-      GlobalVariables.customerID = 5; #HARDCODED
+      # GlobalVariables.customerID = 5; #HARDCODED
       # CALL BACKEND --------------------------
       # remove hardcoded
-      # GlobalVariables.customerID = customerLogin(username_verification.get(), password_verification.get())
+      GlobalVariables.customerID = Connection().customerLogin(username_verification.get(), password_verification.get())
       
 
     if (GlobalVariables.customerID >= 0): 
