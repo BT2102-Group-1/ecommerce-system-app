@@ -97,6 +97,11 @@ def productSearch():
       else:
         tk.messagebox.showerror("Error", "Wrong Item ID / No Such Item ID")
 
+    # Purchase Item
+    def newSearch():
+      window.destroy()
+      productSearch()
+          
     # Text variable
     chosenItemId = tk.StringVar()
 
@@ -108,8 +113,10 @@ def productSearch():
     
     # Purchase Button
     tk.Button(display_frame, height=1, width=10, text="Purchase", bg='#fbf2fa', command=purchaseItem).grid(row=0, column=3, sticky="E")
+    # Make A New Search Button
+    tk.Button(display_frame, height=1, width=15, text="Make A New Search", bg='#fbf2fa', command=newSearch).grid(row=1, column=1, pady=15, padx=40)
 
-    tk.Label(display_frame, text=" ", bg="#F9FBF2").grid(row=1)
+    tk.Label(display_frame, text=" ", bg="#F9FBF2").grid(row=2)
 
     print(productList) # DEBUGGING, REMOVE LATER
     if (not bool(productList)):
