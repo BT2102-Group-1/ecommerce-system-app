@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
 import GlobalVariables 
+from controller import Connection
 
 def listOfRequest():
   window = tk.Tk()
@@ -55,7 +56,7 @@ def listOfRequest():
   tv.bind('<ButtonRelease-1>', selectItem)
 
   # CALL BACKEND --------------------------
-  # requestList = retrieveRequest(GlobalVariables.customerID)
+  requestList = Connection.retrieveRequests(GlobalVariables.customerID)
 
   # DUMMY DATA -------
   requestList = [

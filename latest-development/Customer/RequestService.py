@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 import GlobalVariables 
 #from Customer.ListOfRequest import *
+from controller import Connection
 
 def requestService():
   window = tk.Tk()
@@ -47,10 +48,10 @@ def requestService():
 
     if response == 1:
       # CALL BACKEND -------------------------- 
-      # successful = submitRequest(GlobalVariables.customerID, dropdown_box.get())
-      # if not successful:
-        #tk.messagebox.showerror("Error","Unable to Request Service. Item was not purchased or Item already has a existing request")
-      # else:
+      successful = Connection.submitRequest(GlobalVariables.customerID, dropdown_box.get())
+      if not successful:
+        tk.messagebox.showerror("Error","Unable to Request Service. Item was not purchased or Item already has a existing request")
+      else:
         # Not necessary, printing for our reference only
         print("Request Successful")
         redirectToListOfRequest()
