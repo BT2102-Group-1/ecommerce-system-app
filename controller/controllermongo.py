@@ -159,13 +159,12 @@ class Mongo:
 
         return df.to_dict('records')
 
-
 # TESTING
 
 if __name__ == '__main__':
     m = Mongo()
-    print(m.adminSearch({'Model': [], 'Category': [], 'Color': [], 'Factory': [], 'PowerSupply': [], 'ProductionYear': [], 'PurchaseStatus': []}))
-    # print(m.customerSearch({'Model': [], 'Category': [], 'Color': [], 'Factory': [], 'PowerSupply': [], 'ProductionYear': []}))
+    # print(m.adminSearch({'Model': [], 'Category': [], 'Color': [], 'Factory': [], 'PowerSupply': [], 'ProductionYear': [], 'PurchaseStatus': []}))
+    print(m.customerSearch({'Model': [], 'Category': [], 'Color': [], 'Factory': [], 'PowerSupply': [], 'ProductionYear': []}))
     # print(m.customerSearch({"model": [], "category": ["locks"],  "color": ["white"],
     #                     "productionYear": ["2015"], "factory": [], "powerSupply": ["Battery"]}))
     # print(m.customerSearch({"model": [], "category": [],  "color": [],

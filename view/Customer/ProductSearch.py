@@ -146,8 +146,9 @@ def productSearch():
       # LOOP THROUGH dictionary to see if item exists in the filtered portion
       exists = False 
       for models in productList:
-        for item in models[4]:
-          if item.get('ItemID') == chosenItemId.get():
+        # NOTE index 4 > 3
+        for item in models['items']:
+          if item['ItemID'] == chosenItemId.get():
             exists = True
             break
         
@@ -155,12 +156,11 @@ def productSearch():
 
       if exists:
         # CALL BACKEND --------------------------
-        # successful = purchase(GlobalVariables.customerID, chosenItemId)
-        successful = True
+        successful = Connection().purchase(chosenItemId.get(), GlobalVariables.customerID)
         if successful:
           tk.messagebox.showinfo("Success", "Purchase of Item #" + chosenItemId.get() + " is successful!")
         else:
-          tk.messagebox.showerror("Error", "Service Request cannot be cancelled!")
+          tk.messagebox.showerror("Error", "Purchase of Item #%s unsuccessful" % (chosenItemId.get()))
       else:
         tk.messagebox.showerror("Error", "Wrong Item ID / No Such Item ID")
 
