@@ -57,7 +57,7 @@ def adminViewInventory():
 
   def redirectToMenu():
     window.destroy()
-    from Admin.AdminMenu import adminMenu
+    from view.Admin.AdminMenu import adminMenu
     adminMenu()
 
   tk.Button(frame, text="Return to Menu", bg='#fbf2fa', command = redirectToMenu).grid(row=2, pady=15)

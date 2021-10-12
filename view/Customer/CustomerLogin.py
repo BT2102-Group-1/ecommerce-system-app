@@ -1,8 +1,11 @@
 import tkinter as tk
-# from Customer.CustomerMenu import customerMenu
 from tkinter import messagebox
-import GlobalVariables 
-# import main as mainpage
+
+from view.Customer.CustomerMenu import customerMenu
+from view.Customer.CustomerRegister import customerRegister
+from view import GlobalVariables
+
+from controller.controller import Connection
 
 def customerLogin():
   window = tk.Tk()
@@ -41,10 +44,10 @@ def customerLogin():
     
     # Method below
     else:
-      GlobalVariables.customerID = 5; #HARDCODED
+      # GlobalVariables.customerID = 5; #HARDCODED
       # CALL BACKEND --------------------------
       # remove hardcoded
-      # GlobalVariables.customerID = customerLogin(username_verification.get(), password_verification.get())
+      GlobalVariables.customerID = Connection().customerLogin(username_verification.get(), password_verification.get())
       
 
     if (GlobalVariables.customerID >= 0): 
@@ -56,7 +59,6 @@ def customerLogin():
   # Redirect to Menu Page 
   def redirectToCustomerHome():
     window.destroy()
-    from Customer.CustomerMenu import customerMenu
     customerMenu()    
   # Login button
   loginButton = tk.Button(frame, text = "Log In", bg='#fbf2fa', command = verifyLogin)
@@ -71,7 +73,6 @@ def customerLogin():
   # Redirect to Register Page 
   def registernow():
     window.destroy()
-    from Customer.CustomerRegister import customerRegister
     customerRegister()
 
   registerButton = tk.Button(frame, text = "Register Here", bg='#fbf2fa', command = registernow)
@@ -80,7 +81,7 @@ def customerLogin():
   # Redirect to Main
   def redirectToMain():
     window.destroy()
-    from main import main
+    from view.main import main
     main()
 
   # Redirect to Main Button

@@ -1,9 +1,10 @@
 import tkinter as tk
-from Admin.AdminViewInventory import *
-from Admin.AdminProductCatalogue import *
-from Admin.AdminServiceList import *
-from Admin.AdminUnpaidRequest import *
 from tkinter import messagebox
+
+from view.Admin.AdminViewInventory import adminViewInventory
+from view.Admin.AdminProductCatalogue import adminProductCatalogue
+from view.Admin.AdminServiceList import adminServiceList
+from view.Admin.AdminUnpaidRequest import adminUnpaidRequest
 
 def adminMenu():
   window = tk.Tk()
@@ -49,7 +50,7 @@ def adminMenu():
   # Redirect to Main.py
   def redirectToMain():
     window.destroy()
-    from main import main
+    from view.main import main
     main()
 
   tk.Button(frame, text="Initialise Database", bg='#fbf2fa', command = redirectToInitialiseDatabase, width = 30).pack(pady = 5)

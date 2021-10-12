@@ -88,13 +88,9 @@ class Mongo:
         results = list(cursor)  # convert the documents object into a list
         df = pd.DataFrame(results)
         df.rename(columns={'_id': 'productId'}, inplace=True)
+        df.drop(columns=['productId', 'numItemsInStock'], inplace=True)
 
-        # flatMap values that are in lists
-        # columns = ['productId', 'model', 'category', 'price', 'warranty']
-        # for column in columns:
-        #     df[column] = df[column].apply(lambda arr: arr[0])
-
-        return df
+        return df.to_dict('records')
 
 
     def adminSearch(self, selection):
@@ -161,15 +157,17 @@ class Mongo:
         df = pd.DataFrame(results)
         df.rename(columns={'_id': 'productId'}, inplace=True)
 
-        return df
+        return df.to_dict('records')
 
 
 # TESTING
 
 if __name__ == '__main__':
     m = Mongo()
-    print(m.customerSearch({"model": [], "category": ["locks"],  "color": ["white"],
-                        "productionYear": ["2015"], "factory": [], "powerSupply": ["Battery"]}))
-    print(m.customerSearch({"model": [], "category": [],  "color": [],
-                        "productionYear": [], "factory": [], "powerSupply": []}))
-    print(m.adminSearch({"model": ["Light1", "Light2", "SmartHome1"]}))
+    print(m.adminSearch({'Model': [], 'Category': [], 'Color': [], 'Factory': [], 'PowerSupply': [], 'ProductionYear': [], 'PurchaseStatus': []}))
+    # print(m.customerSearch({'Model': [], 'Category': [], 'Color': [], 'Factory': [], 'PowerSupply': [], 'ProductionYear': []}))
+    # print(m.customerSearch({"model": [], "category": ["locks"],  "color": ["white"],
+    #                     "productionYear": ["2015"], "factory": [], "powerSupply": ["Battery"]}))
+    # print(m.customerSearch({"model": [], "category": [],  "color": [],
+    #                     "productionYear": [], "factory": [], "powerSupply": []}))
+    # print(m.adminSearch({"model": ["Light1", "Light2", "SmartHome1"]}))

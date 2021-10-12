@@ -1,9 +1,8 @@
 import tkinter as tk
-# from Customer.ListOfRequest import *
-# from Customer.ProductSearch import *
-# from Customer.PurchaseHistory import *
-# from Customer.RequestService import *
-# from main import *
+from view.Customer.ListOfRequest import listOfRequest
+from view.Customer.ProductSearch import productSearch
+from view.Customer.PurchaseHistory import purchaseHistory
+from view.Customer.RequestService import requestService
 
 def customerMenu():
   window = tk.Tk()
@@ -18,31 +17,27 @@ def customerMenu():
   # Redirect to Product Search Page
   def redirectToProductSearch():
     window.destroy()
-    from Customer.ProductSearch import productSearch
     productSearch()
 
   # Redirect to PurchaseHistory Page
   def redirectToPurchaseHistory():
     window.destroy()
-    from Customer.PurchaseHistory import purchaseHistory
     purchaseHistory()
 
   # Redirect to List Of Request
   def redirectToListOfRequest():
     window.destroy()
-    from Customer.ListOfRequest import listOfRequest
     listOfRequest()
 
   # Redirect to Request History Page
   def redirectToRequestService():
     window.destroy()
-    from Customer.RequestService import requestService
     requestService()
 
   # Redirect to Main.py
   def redirectToMain():
     window.destroy()
-    from main import main
+    from view.main import main
     main()
 
   tk.Button(frame, text="Product Search", bg='#fbf2fa', command = redirectToProductSearch, width = 30).pack(pady = 5)

@@ -2,6 +2,8 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
 
+from controller.controller import Connection
+
 def adminProductCatalogue():
   window = tk.Tk()
   window.title("Admin Product Catalogue")
@@ -35,7 +37,7 @@ def adminProductCatalogue():
   options = {
     'Model': [light1val, light2val, safe1val, safe2val, smarthome1val],
     'Category': [locksval, lightsval],
-    'Colour': [whiteval, blueval, yellowval, greenval, blackval],
+    'Color': [whiteval, blueval, yellowval, greenval, blackval],
     'Factory': [malaysiaval, chinaval, philippinesval],
     'PowerSupply': [batteryval, usbval],
     'ProductionYear': [val2020, val2019, val2017, val2016, val2015, val2014],
@@ -51,7 +53,7 @@ def adminProductCatalogue():
     dict = {
       'Model': [],
       'Category': [],
-      'Colour': [],
+      'Color': [],
       'Factory': [],
       'PowerSupply': [],
       'ProductionYear': [],
@@ -67,87 +69,87 @@ def adminProductCatalogue():
     
     print(dict) 
     # CALL BACKEND -------------------------- 
-    # productList = customerSearch(dict)
+    productList = Connection().adminSearch(dict)
 
     # DUMMY DATA WE DO NOT NEED TO CARE ABOUT EVENTUALLY -----
     # [modelname, category, modelPrice, modelCost, warranty, numofSold, numofUnsold [array of dictionaries --> one dictionary is one object]]
     # x 7 (because there are 7 models)
-    productList = [
-      ["Light1", "Lights", "$50", "$20", "12 Months", "96", "13", [
-          {"ItemID":"1001", "Color":"White", "Factory":"Malaysia", "PowerSupply":"Battery", "ProductionYear":"2014"
-          },
-          {"ItemID":"1002", "Color":"Blue", "Factory":"Malaysia", "PowerSupply":"USB", "ProductionYear":"2016"
-          },
-          {"ItemID":"1003", "Color":"White", "Factory":"Philippines", "PowerSupply":"USB", "ProductionYear":"2020"
-          }
-        ]
-      ],
-      ["Light2", "Lights", "$60", "$22", "6 Months", "96", "13", [
-        {"ItemID":"1283", "Color":"White", "Factory":"Malaysia", "PowerSupply":"Battery", "ProductionYear":"2016"
-          },
-          {"ItemID":"1293", "Color":"Yellow", "Factory":"China", "PowerSupply":"USB", "ProductionYear":"2017"
-          },
-          {"ItemID":"1296", "Color":"Green", "Factory":"Philippines", "PowerSupply":"Battery", "ProductionYear":"2019"
-          }
-        ]
-      ],
-      ["SmartHome1", "Lights", "$70", "$30", "3 Months", "96", "13", [
-          {"ItemID":"1374", "Color":"Black", "Factory":"China", "PowerSupply":"Battery", "ProductionYear":"2017"
-          },
-          {"ItemID":"1379", "Color":"White", "Factory":"Malaysia", "PowerSupply":"USB", "ProductionYear":"2015"
-          },
-          {"ItemID":"1389", "Color":"Yellow", "Factory":"China", "PowerSupply":"USB", "ProductionYear":"2014"
-          }
-        ]
-      ],
-      ["Safe1", "Locks", "$100", "$30", "4 Months", "96", "13", [
-          {"ItemID":"1423", "Color":"White", "Factory":"China", "PowerSupply":"Battery", "ProductionYear":"2017"
-          },
-          {"ItemID":"1436", "Color":"Blue", "Factory":"Malaysia", "PowerSupply":"Battery", "ProductionYear":"2020"
-          },
-          {"ItemID":"1493", "Color":"Black", "Factory":"Philippines", "PowerSupply":"USB", "ProductionYear":"2019"
-          }
-        ]
-      ],
-      ["Safe2", "Locks", "$120", "$50", "17 Months", "96", "13", [
-          {"ItemID":"1542", "Color":"Yellow", "Factory":"Malaysia", "PowerSupply":"Battery", "ProductionYear":"2014"
-          },
-          {"ItemID":"1554", "Color":"Blue", "Factory":"Philippines", "PowerSupply":"USB", "ProductionYear":"2016"
-          },
-          {"ItemID":"1567", "Color":"Green", "Factory":"Philippines", "PowerSupply":"USB", "ProductionYear":"2020"
-          }
-        ]
-      ],
-      ["Safe3", "Locks", "$125", "$50", "12 Months", "96", "13", [
-          {"ItemID":"1684", "Color":"White", "Factory":"Malaysia", "PowerSupply":"Battery", "ProductionYear":"2014"
-            },
-            {"ItemID":"1693", "Color":"Blue", "Factory":"China", "PowerSupply":"USB", "ProductionYear":"2017"
-            },
-            {"ItemID":"1699", "Color":"Black", "Factory":"Philippines", "PowerSupply":"USB", "ProductionYear":"2015"
-            }
-        ]
-      ],
-      ["SmartHome1", "Locks", "$200", "$100", "6 Months", "96", "13", [
-        {"ItemID":"1783", "Color":"White", "Factory":"Malaysia", "PowerSupply":"Battery", "ProductionYear":"2019"
-          },
-          {"ItemID":"1788", "Color":"Blue", "Factory":"Malaysia", "PowerSupply":"USB", "ProductionYear":"2016"
-          },
-          {"ItemID":"1790", "Color":"Green", "Factory":"China", "PowerSupply":"Battery", "ProductionYear":"2015"
-          }
-        ]
-      ]
-    ]
+    # productList = [
+    #   ["Light1", "Lights", "$50", "$20", "12 Months", "96", "13", [
+    #       {"ItemID":"1001", "Color":"White", "Factory":"Malaysia", "PowerSupply":"Battery", "ProductionYear":"2014"
+    #       },
+    #       {"ItemID":"1002", "Color":"Blue", "Factory":"Malaysia", "PowerSupply":"USB", "ProductionYear":"2016"
+    #       },
+    #       {"ItemID":"1003", "Color":"White", "Factory":"Philippines", "PowerSupply":"USB", "ProductionYear":"2020"
+    #       }
+    #     ]
+    #   ],
+    #   ["Light2", "Lights", "$60", "$22", "6 Months", "96", "13", [
+    #     {"ItemID":"1283", "Color":"White", "Factory":"Malaysia", "PowerSupply":"Battery", "ProductionYear":"2016"
+    #       },
+    #       {"ItemID":"1293", "Color":"Yellow", "Factory":"China", "PowerSupply":"USB", "ProductionYear":"2017"
+    #       },
+    #       {"ItemID":"1296", "Color":"Green", "Factory":"Philippines", "PowerSupply":"Battery", "ProductionYear":"2019"
+    #       }
+    #     ]
+    #   ],
+    #   ["SmartHome1", "Lights", "$70", "$30", "3 Months", "96", "13", [
+    #       {"ItemID":"1374", "Color":"Black", "Factory":"China", "PowerSupply":"Battery", "ProductionYear":"2017"
+    #       },
+    #       {"ItemID":"1379", "Color":"White", "Factory":"Malaysia", "PowerSupply":"USB", "ProductionYear":"2015"
+    #       },
+    #       {"ItemID":"1389", "Color":"Yellow", "Factory":"China", "PowerSupply":"USB", "ProductionYear":"2014"
+    #       }
+    #     ]
+    #   ],
+    #   ["Safe1", "Locks", "$100", "$30", "4 Months", "96", "13", [
+    #       {"ItemID":"1423", "Color":"White", "Factory":"China", "PowerSupply":"Battery", "ProductionYear":"2017"
+    #       },
+    #       {"ItemID":"1436", "Color":"Blue", "Factory":"Malaysia", "PowerSupply":"Battery", "ProductionYear":"2020"
+    #       },
+    #       {"ItemID":"1493", "Color":"Black", "Factory":"Philippines", "PowerSupply":"USB", "ProductionYear":"2019"
+    #       }
+    #     ]
+    #   ],
+    #   ["Safe2", "Locks", "$120", "$50", "17 Months", "96", "13", [
+    #       {"ItemID":"1542", "Color":"Yellow", "Factory":"Malaysia", "PowerSupply":"Battery", "ProductionYear":"2014"
+    #       },
+    #       {"ItemID":"1554", "Color":"Blue", "Factory":"Philippines", "PowerSupply":"USB", "ProductionYear":"2016"
+    #       },
+    #       {"ItemID":"1567", "Color":"Green", "Factory":"Philippines", "PowerSupply":"USB", "ProductionYear":"2020"
+    #       }
+    #     ]
+    #   ],
+    #   ["Safe3", "Locks", "$125", "$50", "12 Months", "96", "13", [
+    #       {"ItemID":"1684", "Color":"White", "Factory":"Malaysia", "PowerSupply":"Battery", "ProductionYear":"2014"
+    #         },
+    #         {"ItemID":"1693", "Color":"Blue", "Factory":"China", "PowerSupply":"USB", "ProductionYear":"2017"
+    #         },
+    #         {"ItemID":"1699", "Color":"Black", "Factory":"Philippines", "PowerSupply":"USB", "ProductionYear":"2015"
+    #         }
+    #     ]
+    #   ],
+    #   ["SmartHome1", "Locks", "$200", "$100", "6 Months", "96", "13", [
+    #     {"ItemID":"1783", "Color":"White", "Factory":"Malaysia", "PowerSupply":"Battery", "ProductionYear":"2019"
+    #       },
+    #       {"ItemID":"1788", "Color":"Blue", "Factory":"Malaysia", "PowerSupply":"USB", "ProductionYear":"2016"
+    #       },
+    #       {"ItemID":"1790", "Color":"Green", "Factory":"China", "PowerSupply":"Battery", "ProductionYear":"2015"
+    #       }
+    #     ]
+    #   ]
+    # ]
     displaySearchItems(productList)
 
   # Display search items
   def displaySearchItems(productList):
     count = 2
     for modelDict in productList:     
-      tk.Label(display_frame, bg="#F9FBF2", text="Model: " + modelDict[0] + ", Category: " + modelDict[1] + ", Price: " + modelDict[2]).grid(row=count, column=0, columnspan=4)
+      tk.Label(display_frame, bg="#F9FBF2", text="Model: " + modelDict['model'] + ", Category: " + modelDict['category'] + ", Price: " + str(modelDict['price'])).grid(row=count, column=0, columnspan=4)
       count += 1
-      tk.Label(display_frame, bg="#F9FBF2", text="Cost of Service: $" + modelDict[3] + ", Warranty: " + modelDict[4]).grid(row=count, column=0, columnspan=4)
+      tk.Label(display_frame, bg="#F9FBF2", text="Cost of Service: $" + str(modelDict['serviceFee']) + ", Warranty: " + str(modelDict['warranty'])).grid(row=count, column=0, columnspan=4)
       count += 1
-      tk.Label(display_frame, bg="#F9FBF2", text="Number of Items Sold: " + modelDict[5] + ", Number of Items Unsold: " + modelDict[6]).grid(row=count, column=0, columnspan=4)
+      tk.Label(display_frame, bg="#F9FBF2", text="Number of Items Sold: " + str(modelDict['numItemsSold']) + ", Number of Items Unsold: " + str(modelDict['numItemsInStock'])).grid(row=count, column=0, columnspan=4)
       count += 1
 
       product_table = ttk.Treeview(display_frame)
@@ -171,7 +173,7 @@ def adminProductCatalogue():
       product_table.heading('Production Year', text='Production Year', anchor=tk.CENTER)
       product_table.heading('Purchase Status', text='Purchase Status', anchor=tk.CENTER)
 
-      for item in modelDict[7]:
+      for item in modelDict['items']:
         itemId = item.get('ItemID')
         color = item.get('Color')
         factory = item.get('Factory')
@@ -322,7 +324,7 @@ def adminProductCatalogue():
   # Return to Customer Menu
   def redirectToMenu():
     window.destroy()
-    from Admin.AdminMenu import adminMenu
+    from view.Admin.AdminMenu import adminMenu
     adminMenu()
 
   # Return to Customer Menu Button
