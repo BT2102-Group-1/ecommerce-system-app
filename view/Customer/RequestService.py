@@ -56,7 +56,7 @@ def requestService():
     for item in unrequestedList:
       if str(item['itemId']) == dropdown_box.get():
         # details = "Selected Item: " + item['itemId'] + "\n" + "Warranty: " + item['modelWarranty'] + "\n" + "Amount Payable: " + item['modelCost']
-        details = "Selected Item: %d\nWarranty: %d\nAmount Payable: %d" % (item['itemId'], item['modelWarranty'], item['modelCost'])
+        details = "Selected Item: %d\nWarranty: %d" % (item['itemId'], item['modelWarranty'])
         break
 
     # Print out Data
