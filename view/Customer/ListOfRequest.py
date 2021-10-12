@@ -85,6 +85,8 @@ def listOfRequest():
     if response == 1:
       # CALL BACKEND --------------------------
       Connection().onPay(selectedRowDictionary['values'][0])
+      window.destroy()
+      listOfRequest()
 
       # Not necessary, printing for our reference only
       print("Paid!")
@@ -100,6 +102,8 @@ def listOfRequest():
     if response == 1:
       # CALL BACKEND --------------------------
       Connection().onCancelRequest(selectedRowDictionary['values'][0])
+      window.destroy()
+      listOfRequest()
       
       # Not necessary, printing for our reference only
       print("Request Cancelled")
