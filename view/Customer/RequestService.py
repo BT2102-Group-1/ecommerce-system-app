@@ -50,19 +50,21 @@ def requestService():
 
   # Print more request details for selected item
   def showDetails():
+    details = ""
     # Retrieve Data
     for item in unrequestedList:
-      if item['itemId'].__eq__(dropdown_box.get()):
+      if str(item['itemId']) == dropdown_box.get():
         # details = "Selected Item: " + item['itemId'] + "\n" + "Warranty: " + item['modelWarranty'] + "\n" + "Amount Payable: " + item['modelCost']
         details = "Selected Item: %d\nWarranty: %d\nAmount Payable: %d" % (item['itemId'], item['modelWarranty'], item['modelCost'])
-    
-        # Print out Data
-        tk.Label(request_frame, text=details, bg="#F9FBF2").grid(row=5, column=0, sticky="W")
-        
-        # Submit request button
-        tk.Button(request_frame, text="Submit Request", command=onSubmit, bg='#fbf2fa').grid(row=7, column=1, sticky="E")
-        print(details)
         break
+
+    # Print out Data
+    tk.Label(request_frame, text=details, bg="#F9FBF2").grid(row=5, column=0, sticky="W")
+    
+    # Submit request button
+    tk.Button(request_frame, text="Submit Request", command=onSubmit, bg='#fbf2fa').grid(row=7, column=1, sticky="E")
+    print(details)
+        
 
   def onClick(event):
     showDetails()
