@@ -1,7 +1,8 @@
 import tkinter as tk
 from tkinter import ttk
-import GlobalVariables 
-#from Customer.ListOfRequest import *
+
+from view import GlobalVariables 
+from view.Customer.ListOfRequest import listOfRequest
 
 def requestService():
   window = tk.Tk()
@@ -38,7 +39,6 @@ def requestService():
   # Redirect to List Of Request
   def redirectToListOfRequest():
     window.destroy()
-    from Customer.ListOfRequest import listOfRequest
     listOfRequest()
 
   # Submission 
@@ -92,7 +92,7 @@ def requestService():
 
   def redirectToMenu():
     window.destroy()
-    from Customer.CustomerMenu import customerMenu
+    from view.Customer.CustomerMenu import customerMenu
     customerMenu()
 
   tk.Button(request_frame, text="Return to Menu", bg='#fbf2fa', command = redirectToMenu).grid(row=9, column=1, sticky="E")

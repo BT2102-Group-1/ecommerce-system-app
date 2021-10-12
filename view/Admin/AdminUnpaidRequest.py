@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+
 from controller.controller import Connection
 
 def adminUnpaidRequest():
@@ -135,7 +136,7 @@ def adminUnpaidRequest():
 
   def redirectToMenu():
     window.destroy()
-    from Admin.AdminMenu import adminMenu
+    from view.Admin.AdminMenu import adminMenu
     adminMenu()
 
   tk.Button(frame, text="Return to Menu", bg="#F9FBF2", command = redirectToMenu).grid(row=2, column=0, pady=15)

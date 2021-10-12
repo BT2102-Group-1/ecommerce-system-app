@@ -1,7 +1,9 @@
 import tkinter as tk
-from Admin.AdminMenu import *
 from tkinter import messagebox
-import GlobalVariables
+
+from view.Admin.AdminMenu import *
+from view import GlobalVariables
+
 from controller.controller import Connection
 
 def adminLogin():
@@ -26,7 +28,7 @@ def adminLogin():
 
   def redirectToMain():
     window.destroy()
-    from main import main
+    from view.main import main
     main()
 
   def redirectToAdminHome():

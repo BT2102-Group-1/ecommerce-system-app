@@ -1,7 +1,8 @@
 import tkinter as tk
 from tkinter import ttk
-# from main import *
-import GlobalVariables 
+
+from view import GlobalVariables 
+
 from controller.controller import Connection
 
 def customerRegister():
@@ -71,7 +72,7 @@ def customerRegister():
 
     if (GlobalVariables.customerID >=0):
       root.destroy()
-      from Customer.CustomerMenu import customerMenu
+      from view.Customer.CustomerMenu import customerMenu
       customerMenu()
     else: 
       tk.messagebox.showerror(" Error","Register Unsuccessful. Email already has an existing account")

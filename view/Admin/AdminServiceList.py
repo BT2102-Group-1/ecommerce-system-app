@@ -1,7 +1,9 @@
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
-import GlobalVariables
+
+from view import GlobalVariables
+
 from controller.controller import Connection
 
 def adminServiceList():
@@ -166,7 +168,7 @@ def adminServiceList():
   # Redirect to Menu
   def redirectToMenu():
     window.destroy()
-    from Admin.AdminMenu import adminMenu
+    from view.Admin.AdminMenu import adminMenu
     adminMenu()
 
   tk.Button(frame, text="Return to Menu", bg='#fbf2fa', command = redirectToMenu).grid(row=4, column=5, sticky="E", pady= 10)

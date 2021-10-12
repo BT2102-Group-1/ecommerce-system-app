@@ -1,7 +1,8 @@
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
-import GlobalVariables 
+
+from view import GlobalVariables
 
 def listOfRequest():
   window = tk.Tk()
@@ -147,7 +148,7 @@ def listOfRequest():
   # Redirect to Customer Menu
   def redirectToMenu():
     window.destroy()
-    from Customer.CustomerMenu import customerMenu
+    from view.Customer.CustomerMenu import customerMenu
     customerMenu()
 
   # Redirect to Customer Menu Button

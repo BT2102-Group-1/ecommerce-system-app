@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
-import GlobalVariables 
+
+from view import GlobalVariables
 
 def purchaseHistory():
   window = tk.Tk()
@@ -82,7 +83,7 @@ def purchaseHistory():
   # Return to Customer Menu
   def redirectToMenu():
     window.destroy()
-    from Customer.CustomerMenu import customerMenu
+    from view.Customer.CustomerMenu import customerMenu
     customerMenu()
 
   # Return to Customer Menu Button

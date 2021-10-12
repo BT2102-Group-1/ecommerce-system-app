@@ -1,6 +1,6 @@
 import tkinter as tk
-from Customer.CustomerLogin import customerLogin
-from Admin.AdminLogin import *
+from view.Customer.CustomerLogin import customerLogin
+from view.Admin.AdminLogin import *
 
 def main():
   root = tk.Tk()
