@@ -98,7 +98,7 @@ def listOfRequest():
 
     if response == 1:
       # CALL BACKEND --------------------------
-      #onCancelRequest(selectedRowDictionary['values'][0])
+      Connection().onCancelRequest(selectedRowDictionary['values'][0])
       
       # Not necessary, printing for our reference only
       print("Request Cancelled")
