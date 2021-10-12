@@ -139,7 +139,7 @@ def listOfRequest():
   tk.Button(frame, height=1, width=10, text="Pay for Service",command=canPay, bg='#fbf2fa').grid(row=2, column=0, sticky="W")
 
   # Cancellation Button
-  tk.Button(frame, height=1, width=10, bg='#fbf2fa', text="Cancel Request",command=canCancel).grid(row=2, column=1, sticky="W")
+  tk.Button(frame, height=1, width=12, bg='#fbf2fa', text="Cancel Request",command=canCancel).grid(row=2, column=1, sticky="W")
   
   # Redirect to Customer Menu
   def redirectToMenu():
