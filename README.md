@@ -30,8 +30,8 @@ BT2102 Group 1
 - [X] Register customer
 - [ ] Customer search (Mongo)
 - [X] Admin login
-- [ ] Approve service request
-- [ ] Complete service request
+- [X] Approve service request
+- [X] Complete service request
 - [ ] Change request status after cancellation
 - [ ] Retrieve requests
 - [ ] View purcahse history

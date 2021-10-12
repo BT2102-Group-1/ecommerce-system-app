@@ -1,0 +1,20 @@
+{
+  "files": {
+    "customer/productsearch.py": [
+      {
+        "id": "8e253cf5-3995-4bcd-a2fe-8f02deededd8",
+        "line": 17,
+        "version": 1798,
+        "index": 565
+      }
+    ],
+    "main.py": [
+      {
+        "id": "5736b8ee-58a6-4ae3-90da-d59fc159bac2",
+        "line": 12,
+        "version": 1090,
+        "index": 198
+      }
+    ]
+  }
+}
