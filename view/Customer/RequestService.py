@@ -19,10 +19,11 @@ def requestService():
   # CALL BACKEND -------------------------- 
   unrequestedDf = Connection().getUnrequestedItems(GlobalVariables.customerID)
   unrequestedList = unrequestedDf.to_dict('records')
-  print(unrequestedList)
   
   # Drop Down Box Options
-  options = [item['itemId'] for item in unrequestedList]
+  options = []
+  for item in unrequestedList:
+    options.append(item.get('itemId'))
   print(options)
 
   # Redirect to List Of Request
@@ -52,9 +53,8 @@ def requestService():
   def showDetails():
     # Retrieve Data
     for item in unrequestedList:
-      if item['itemId'] == dropdown_box.get():
-        # details = "Selected Item: " + item['itemId'] + "\n" + "Warranty: " + item['modelWarranty'] + "\n" + "Amount Payable: " + item['modelCost']
-        details = "Selected Item: %d\nWarranty: %d\nAmount Payable: %d" % (item['itemId'], item['modelWarranty'], item['modelCost'])
+      if item.get('itemId').__eq__(dropdown_box.get()):
+        details = "Selected Item: %s\nWarranty: %d\nAmount Payable: %d" % (item['itemId'], item['modelWarranty'], item['modelCost'])
     
         # Print out Data
         tk.Label(request_frame, text=details, bg="#F9FBF2").grid(row=5, column=0, sticky="W")
@@ -63,6 +63,16 @@ def requestService():
         tk.Button(request_frame, text="Submit Request", command=onSubmit, bg='#fbf2fa').grid(row=7, column=1, sticky="E")
         print(details)
         break
+    # for item in unrequestedList:
+    #   if item.get('itemId') == dropdown_box.get():
+    #     details = "Selected Item: " + item.get('itemId') + "\n" + "Warranty: " + item.get('modelWarranty') + "\n" + "Amount Payable: " + item.get('modelCost')
+    #     break
+    
+    # # Print out Data
+    # tk.Label(request_frame, text=details, bg="#F9FBF2").grid(row=5, column=0, sticky="W")
+    
+    # # Submit request button
+    # tk.Button(request_frame, text="Submit Request", command=onSubmit, bg='#fbf2fa').grid(row=7, column=1, sticky="E")
 
   def onClick(event):
     showDetails()

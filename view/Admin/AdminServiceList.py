@@ -129,9 +129,7 @@ def adminServiceList():
         if response == 1:
             
             ## CALL BACKEND --------------------------
-            # add "serviceId = rowDictionary['values'][0]"
-            # add "controller.approveServiceRequest(GlobalVariables.adminId, serviceId)"
-            # Might need try catch for this if update fails
+            serviceId = rowDictionary['values'][0]
             Connection().approveServiceRequest(GlobalVariables.adminId, serviceId)
             print("Approved service")
             ## ---------------------------------------
@@ -152,8 +150,7 @@ def adminServiceList():
         if response == 1:
             print("Completed service")
             ## CALL BACKEND --------------------------
-            # add "serviceId = rowDictionary['values'][0]"
-            # add "controller.completeServiceRequest(serviceId)"
+            serviceId = rowDictionary['values'][0]
             # Might need try catch for this if update fails
             Connection().completeServiceRequest(serviceId)
             ## ---------------------------------------

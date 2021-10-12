@@ -1,4 +1,5 @@
 import tkinter as tk
+import math
 from tkinter import ttk
 from tkinter import messagebox
 
@@ -63,7 +64,7 @@ def listOfRequest():
     requestId = request.get('requestId')
     itemId = request.get('itemId')
     requestDate = request.get('requestDate')
-    serviceFee = request.get('serviceFee')
+    serviceFee =  "-" if math.isnan(request.get('serviceFee')) else request.get('serviceFee')
     requestStatus = request.get('requestStatus')
 
     if requestStatus == "Submitted and Waiting for payment":
