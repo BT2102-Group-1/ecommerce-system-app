@@ -68,13 +68,13 @@ def listOfRequest():
     requestStatus = request.get('requestStatus')
 
     if requestStatus == "Submitted and Waiting for payment":
-      tv.insert(parent='', index=itemId, iid=itemId, text='', values=(requestId, itemId, requestDate, serviceFee, requestStatus, "-", "-")) 
+      tv.insert(parent='', index=itemId, text='', values=(requestId, itemId, requestDate, serviceFee, requestStatus, "-", "-")) 
 
     elif (requestStatus == "Canceled"):
-      tv.insert(parent='', index=itemId, iid=itemId, text='', values=(requestId,itemId, requestDate, serviceFee, requestStatus, "-", "Y"))
+      tv.insert(parent='', index=itemId, text='', values=(requestId,itemId, requestDate, serviceFee, requestStatus, "-", "Y"))
 
     else:
-      tv.insert(parent='', index=itemId, iid=itemId, text='', values=(requestId,itemId, requestDate, serviceFee, requestStatus, "Y", "-")) 
+      tv.insert(parent='', index=itemId, text='', values=(requestId,itemId, requestDate, serviceFee, requestStatus, "Y", "-")) 
 
   tv.grid(row=0, column=0, columnspan=4)
 
@@ -85,6 +85,8 @@ def listOfRequest():
     if response == 1:
       # CALL BACKEND --------------------------
       Connection().onPay(selectedRowDictionary['values'][0])
+      window.destroy()
+      listOfRequest()
 
       # Not necessary, printing for our reference only
       print("Paid!")
@@ -100,6 +102,8 @@ def listOfRequest():
     if response == 1:
       # CALL BACKEND --------------------------
       Connection().onCancelRequest(selectedRowDictionary['values'][0])
+      window.destroy()
+      listOfRequest()
       
       # Not necessary, printing for our reference only
       print("Request Cancelled")
