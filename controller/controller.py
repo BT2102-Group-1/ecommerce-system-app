@@ -128,8 +128,9 @@ class Connection:
         # item object should have itemid, model name, purchaseDate, serviceFee, warranty (you can give us extra attributes if it is more convenient for your implementation) -- possible to give us warranty end date?
         return pd.read_sql_query(
             '''SELECT itemId, modelName, modelCost, modelWarranty, purchaseDate, DATE_ADD(purchaseDate, INTERVAL modelWarranty MONTH) warrantyDate 
-            FROM Item i LEFT JOIN Model USING (productId) LEFT JOIN  Request USING (itemId) 
-            WHERE i.customerId = %d ORDER BY purchaseDate DESC''' 
+            FROM Item i LEFT JOIN Model USING (productId) LEFT JOIN 
+            (SELECT * FROM Request WHERE requestStatus <> 'Canceled' AND requestStatus <> 'Completed' ) AS r USING (itemId) 
+            WHERE i.customerId = %d AND r.requestId IS NULL ORDER BY purchaseDate DESC''' 
             % customerId, 
             self.connection)
 
@@ -139,9 +140,8 @@ class Connection:
         # requests can only be submitted if the item has been purchased by the customer previously, and there isn't an existing request
         item_df = pd.read_sql_query(
             '''SELECT i.purchaseDate, i.customerId, m.modelCost, m.modelWarranty, r.requestStatus, DATE_ADD(i.purchaseDate, INTERVAL m.modelWarranty MONTH) AS dateInterval
-            FROM Item i 
-            INNER JOIN Model m ON i.productId = m.productId 
-            LEFT JOIN Request r ON i.itemId = r.itemId AND r.requestStatus != 'Completed' OR 'Cancelled'
+            FROM Item i LEFT JOIN Model m USING (productId) LEFT JOIN 
+            (SELECT * FROM Request WHERE requestStatus <> 'Canceled' AND requestStatus <> 'Completed' ) AS r USING (itemId)
             WHERE i.itemId = %s
             LIMIT 1'''
             % itemId,

@@ -8,7 +8,7 @@ from controller.controller import Connection
 def purchaseHistory():
   window = tk.Tk()
   window.title("Purchase History")
-  window.geometry("1350x1350")
+  window.geometry("1280x800")
   window.configure(bg="#f9f9f8")
 
   # Create Frame for List of Purchase History

@@ -76,7 +76,7 @@ def requestService():
     customerMenu()
 
   if (not bool(options)):
-    tk.messagebox.showerror("Error","Unable to Request Service. You have not purchased any items.")
+    tk.messagebox.showerror("Error","Unable to Request Service. You have either not purchased any items or all your items already have an ongoing request.")
     redirectToMenu()
   else:
     # Dropdown Menu of Purchased Item

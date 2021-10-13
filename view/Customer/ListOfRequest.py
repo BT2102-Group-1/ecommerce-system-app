@@ -9,7 +9,7 @@ from controller.controller import Connection
 def listOfRequest():
   window = tk.Tk()
   window.title("List Of Request")
-  window.geometry("800x800")
+  window.geometry("1280x800")
   window.configure(bg="#f9f9f8")
 
   # Add Frame
