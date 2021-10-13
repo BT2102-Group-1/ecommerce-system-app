@@ -212,6 +212,12 @@ class Mongo:
         df = pd.DataFrame(results)
         df.rename(columns={'ModelName': 'Model'}, inplace=True)
         return df.to_dict('records')
+    
+    # Returns True if MongoDB database was successfully updated, False otherwise
+    def purchase(self, itemId):
+        cursor = self.collection.update_one({"ItemID": itemId}, {"$set": {"PurchaseStatus": "Sold"}})
+        print(cursor.raw_result['updatedExisting'])
+        return cursor.raw_result['updatedExisting']
 
 # TESTING
 

@@ -75,8 +75,8 @@ def productSearch():
     displaySearchResultsandItem(productList)
 
     # Disable Search Button
-    if (buttonsToDisable[0]['state'] == tk.NORMAL):
-        buttonsToDisable[0].config(state=tk.DISABLED)
+    # if (buttonsToDisable[0]['state'] == tk.NORMAL):
+    #     buttonsToDisable[0].config(state=tk.DISABLED)
   
   def displaySearchResultsandItem(productList):
 
@@ -99,9 +99,9 @@ def productSearch():
         if successful:
           tk.messagebox.showinfo("Success", "Purchase of Item #" + chosenItemId.get() + " is successful!")
         else:
-          tk.messagebox.showerror("Error", "Purchase of Item #%s unsuccessful" % (chosenItemId.get()))
+          tk.messagebox.showerror("Error", "Purchase of Item #%s unsuccessful. This item has already been sold, please select another item." % (chosenItemId.get()))
       else:
-        tk.messagebox.showerror("Error", "Wrong Item ID / No Such Item ID")
+        tk.messagebox.showerror("Error", "Purchase of Item #%s unsuccessful. Item has been sold / No Such Item ID" % (chosenItemId.get()))
 
     # Make A New Search
     def newSearch():
@@ -243,10 +243,10 @@ def productSearch():
   # Advance Search Options Button 
   tk.Button(search_frame, text="Advance Search", bg='#fbf2fa', command=onClick).grid(sticky="W", row=2, column=8)
   # Search Button
-  global buttonsToDisable 
-  buttonsToDisable = []
+  # global buttonsToDisable 
+  # buttonsToDisable = []
   searchButton = tk.Button(search_frame, text="Search", bg='#fbf2fa', command=onSearch, state=tk.NORMAL).grid(sticky="W", row=15, column=8)
-  buttonsToDisable.append(searchButton)
+  # buttonsToDisable.append(searchButton)
 
   # Styling Spaces
   tk.Label(search_frame, text="   ", bg="#F9FBF2").grid(row=1, column=0)

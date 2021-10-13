@@ -100,7 +100,8 @@ class Connection:
             self.connection.execute(
                 'UPDATE Item i SET i.purchaseStatus = "Sold", i.customerId = %d, i.purchaseDate = CURDATE() WHERE i.itemId = %s'
                 % (customerId, itemId))
-            return True
+            # Update MongoDB database
+            return self.mongodb.purchase(itemId)
         else:
             return False
         # return true if successful, false otherwise (in any case where there are two customers viewing a product, one bought alr but not enough time to update in the product page and hence, the 2nd customer click yeet)
