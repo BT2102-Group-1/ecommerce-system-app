@@ -50,10 +50,10 @@ def customerLogin():
       GlobalVariables.customerID = Connection().customerLogin(username_verification.get(), password_verification.get())
       
 
-    if (GlobalVariables.customerID >= 0): 
-      redirectToCustomerHome()
-    elif (not username_verification.get() or not password_verification.get()):
-      tk.messagebox.showerror("Error","Login Unsuccessful. Please check your email address or password again.")
+      if (GlobalVariables.customerID >= 0): 
+        redirectToCustomerHome()
+      else:
+        tk.messagebox.showerror("Error","Login Unsuccessful. Please check your email address or password again.")
 
 
   # Redirect to Menu Page 
