@@ -334,7 +334,7 @@ class Connection:
         # clicking approved checkbox will update service status to be in progress.
         # void function that updates serviceStatus of Service  to "In progress"
         # update request
-        request_df = pd.read_sql_query('SELECT requestStatus FROM Request INNER JOIN Service s USING(requestId) WHERE s.serviceId = %d AND requestStatus = "Submitted"' % serviceId, self.connection)
+        request_df = pd.read_sql_query('SELECT requestStatus FROM Request INNER JOIN Service s USING(requestId) WHERE s.serviceId = %d AND (requestStatus = "Submitted" OR requestStatus = "In progress")' % serviceId, self.connection)
         if not request_df.empty:
             self.connection.execute(
                 'UPDATE Request r INNER JOIN Service s ON r.requestId = s.requestId SET r.requestStatus = "Approved" WHERE s.serviceId = %d'
