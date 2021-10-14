@@ -118,10 +118,10 @@ def listOfRequest():
     if (len(selectedRowDictionary) == 0):
       tk.messagebox.showwarning("Warning", "No Items Selected")
     else:
-      if (selectedRowDictionary['values'][5] != 'Y' and selectedRowDictionary['values'][4] != "Cancelled" ):
+      if (selectedRowDictionary['values'][5] != 'Y' and selectedRowDictionary['values'][4] != "Canceled" ):
         payment()
       else:
-        tk.messagebox.showerror("Error", "Payment has been made!")
+        tk.messagebox.showerror("Error", "Payment cannot be made!")
 
   # Check if Request is eligible for Cancellation
   def canCancel():

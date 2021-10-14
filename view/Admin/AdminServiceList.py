@@ -112,10 +112,14 @@ def adminServiceList():
             
             ## CALL BACKEND --------------------------
             serviceId = rowDictionary['values'][0]
-            Connection().approveServiceRequest(GlobalVariables.adminId, serviceId)
-            window.destroy()
-            adminServiceList()
-            print("Approved service")
+            success = Connection().approveServiceRequest(GlobalVariables.adminId, serviceId)
+            
+            if not success:
+              tk.messagebox.showerror("Error", "Service fee has not beed paid!")
+            else:
+              window.destroy()
+              adminServiceList()
+              print("Approved service")
             ## ---------------------------------------
         else:
             print("Cancelled approve process")
@@ -123,6 +127,7 @@ def adminServiceList():
         tk.messagebox.showerror("Error", "Service has already been approved!")
       elif(serviceStatusofRowSelected == "Completed"):
         tk.messagebox.showerror("Error", "Service has already been completed, there's nothing to approve for!")
+        
   
   def completeService():
     if (len(rowDictionary) == 0):
