@@ -34,10 +34,10 @@ def productSearch():
   display_frame.pack()
 
   # Initialize variables and dictionary
-  light1val, light2val, safe1val, safe2val, smarthome1val, locksval, lightsval, whiteval, blueval, yellowval, greenval, blackval, malaysiaval, chinaval, philippinesval, batteryval, usbval, val2020, val2019, val2017, val2016, val2015, val2014 = (tk.StringVar() for i in range(23))
+  light1val, light2val, safe1val, safe2val, safe3val, smarthome1val, locksval, lightsval, whiteval, blueval, yellowval, greenval, blackval, malaysiaval, chinaval, philippinesval, batteryval, usbval, val2020, val2019, val2017, val2016, val2015, val2014 = (tk.StringVar() for i in range(23))
 
   options = {
-    'Model': [light1val, light2val, safe1val, safe2val, smarthome1val],
+    'Model': [light1val, light2val, safe1val, safe2val, safe3val, smarthome1val],
     'Category': [locksval, lightsval],
     'Color': [whiteval, blueval, yellowval, greenval, blackval],
     'Factory': [malaysiaval, chinaval, philippinesval],
@@ -238,7 +238,8 @@ def productSearch():
   tk.Checkbutton(search_frame, bg="#F9FBF2", text = "Light2", variable = light2val, onvalue="Light2").grid(row=2, column=2)
   tk.Checkbutton(search_frame, bg="#F9FBF2", text = "Safe1", variable = safe1val, onvalue="Safe1").grid(row=2, column=3)
   tk.Checkbutton(search_frame, bg="#F9FBF2", text = "Safe2", variable = safe2val, onvalue="Safe2").grid(row=2, column=4)
-  tk.Checkbutton(search_frame, bg="#F9FBF2", text = "Smart Home1", variable = smarthome1val, onvalue="SmartHome1").grid(sticky="W", row=2, column=5)
+  tk.Checkbutton(search_frame, bg="#F9FBF2", text = "Safe3", variable = safe3val, onvalue="Safe3").grid(row=2, column=5)
+  tk.Checkbutton(search_frame, bg="#F9FBF2", text = "SmartHome1", variable = smarthome1val, onvalue="SmartHome1").grid(sticky="W", row=2, column=6)
 
   # Advance Search Options Button 
   tk.Button(search_frame, text="Advance Search", bg='#fbf2fa', command=onClick).grid(sticky="W", row=2, column=8)
