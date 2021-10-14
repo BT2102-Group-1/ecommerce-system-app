@@ -33,6 +33,9 @@ def adminProductCatalogue():
 
   # Initialize variables and dictionary
   light1val, light2val, safe1val, safe2val, safe3val, smarthome1val, locksval, lightsval, whiteval, blueval, yellowval, greenval, blackval, malaysiaval, chinaval, philippinesval, batteryval, usbval, val2020, val2019, val2017, val2016, val2015, val2014, soldval, unsoldval = (tk.StringVar() for i in range(26))
+  # Integer variables
+  minPrice = tk.IntVar(value=0) # Default value is 0
+  maxPrice = tk.IntVar(value=1000000) # Default value is 1000000
 
   options = {
     'Model': [light1val, light2val, safe1val, safe2val, safe3val, smarthome1val],
@@ -57,7 +60,9 @@ def adminProductCatalogue():
       'Factory': [],
       'PowerSupply': [],
       'ProductionYear': [],
-      'PurchaseStatus': []
+      'PurchaseStatus': [],
+      'MinPrice': [],
+      'MaxPrice': [],
     }
 
     for key, value in options.items():  
@@ -66,6 +71,12 @@ def adminProductCatalogue():
           arr = dict.get(key)
           arr.append(i.get())
           dict[key] = arr
+
+    ## ADDED PRICE FILTER ##
+    if (minPrice.get() > 0):
+      dict['MinPrice'].append(minPrice.get())
+    if (maxPrice.get() < 1000000):
+      dict['MaxPrice'].append(maxPrice.get())
     
     print(dict) 
     # CALL BACKEND -------------------------- 
@@ -171,10 +182,10 @@ def adminProductCatalogue():
     tk.Label(search_frame, bg="#F9FBF2", text="Production Year").grid(sticky="W", row=8, column=5)
     # Production Year Options
     tk.Checkbutton(search_frame, bg="#F9FBF2", text = "2020", variable = val2020, onvalue="2020").grid(sticky="W", row=8, column=6)
-    tk.Checkbutton(search_frame, bg="#F9FBF2", text = "2019", variable = val2019, onvalue="2019").grid(sticky="W", row=8, column=7)
+    tk.Checkbutton(search_frame, bg="#F9FBF2", text = "2019", variable = val2019, onvalue="2019").grid(sticky="W", row=8, column=7, padx=(0,50)) # Added space for styling
     tk.Checkbutton(search_frame, bg="#F9FBF2", text = "2017", variable = val2017, onvalue="2017").grid(sticky="W", row=8, column=8)
     tk.Checkbutton(search_frame, bg="#F9FBF2", text = "2016", variable = val2016, onvalue="2016").grid(sticky="W", row=9, column=6)
-    tk.Checkbutton(search_frame, bg="#F9FBF2", text = "2015", variable = val2015, onvalue="2015").grid(sticky="W", row=9, column=7)
+    tk.Checkbutton(search_frame, bg="#F9FBF2", text = "2015", variable = val2015, onvalue="2015").grid(sticky="W", row=9, column=7, padx=(0,50)) # Added space for styling
     tk.Checkbutton(search_frame, bg="#F9FBF2", text = "2014", variable = val2014, onvalue="2014").grid(sticky="W", row=9, column=8)
 
     tk.Label(search_frame, bg="#F9FBF2", text="   ").grid(row=10, column=0)
@@ -186,11 +197,23 @@ def adminProductCatalogue():
     tk.Checkbutton(search_frame, bg="#F9FBF2", text = "China", variable = chinaval, onvalue="China").grid(sticky="W", row=11, column=2)
     tk.Checkbutton(search_frame, bg="#F9FBF2", text = "Philippines", variable = philippinesval, onvalue="Philippines").grid(sticky="W", row=11, column=3)
 
+    tk.Label(search_frame, bg="#F9FBF2", text="   ").grid(row=12, column=0)
+
     # Purchase Status
-    tk.Label(search_frame, bg="#F9FBF2", text="Purchase Status").grid(sticky="W", row=11, column=5)
+    tk.Label(search_frame, bg="#F9FBF2", text="Purchase Status").grid(sticky="W", row=13, column=0)
     # Purchase Status Options
-    tk.Checkbutton(search_frame, bg="#F9FBF2", text = "Sold", variable = soldval, onvalue="Sold").grid(sticky="W", row=11, column=6)
-    tk.Checkbutton(search_frame, bg="#F9FBF2", text = "Unsold", variable = unsoldval, onvalue="Unsold").grid(sticky="W", row=11, column=7)
+    tk.Checkbutton(search_frame, bg="#F9FBF2", text = "Sold", variable = soldval, onvalue="Sold").grid(sticky="W", row=13, column=1)
+    tk.Checkbutton(search_frame, bg="#F9FBF2", text = "Unsold", variable = unsoldval, onvalue="Unsold").grid(sticky="W", row=13, column=2)
+  
+    ## ADDED PRICE FILTER ##
+    # Minimum Price Label
+    tk.Label(search_frame, text="Minimum Price ($)", bg="#F9FBF2").grid(sticky="W", row=11, column=5)
+    # Input Field for Min Price
+    tk.Entry(search_frame, text = "MinPrice", width=10, textvariable= minPrice).grid(sticky="W", row=11, column=6, columnspan=3)
+    # Maximum Price Label
+    tk.Label(search_frame, text="Maximum Price ($)", bg="#F9FBF2").grid(sticky="W", row=12, column=5)
+    # Input Field for Max Price
+    tk.Entry(search_frame, text = "MaxPrice", width=10, textvariable= maxPrice).grid(sticky="W", row=12, column=6, columnspan=3)
   
   # Simple Search Title
   tk.Label(search_frame, bg="#F9FBF2", text="Simple Search").grid(sticky="W", row=0, column=0)
@@ -208,7 +231,7 @@ def adminProductCatalogue():
   # Advance Search Options Button 
   tk.Button(search_frame, bg='#fbf2fa', text="Advance Search", command=onClick).grid(sticky="W", row=2, column=8)
   # Search Button
-  tk.Button(search_frame, bg='#fbf2fa', text="Search", command=onSearch).grid(sticky="W", row=15, column=8)
+  tk.Button(search_frame, bg='#fbf2fa', text="Search", command=onSearch).grid(sticky="W", row=16, column=8)
 
   # Styling Spaces
   tk.Label(search_frame, text="   ", bg="#F9FBF2").grid(row=1, column=0)

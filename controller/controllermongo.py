@@ -26,13 +26,13 @@ class Mongo:
 
         # Price
         price = dict()
-        if "MinPrice" in selection:
-            price["$gte"] = selection["MinPrice"]
+        if bool(selection["MinPrice"]):
+            price["$gte"] = selection["MinPrice"][0]
             selection.pop("MinPrice")
-        if "MaxPrice" in selection:
-            price["$lte"] = selection["MaxPrice"]
+        if bool(selection["MaxPrice"]):
+            price["$lte"] = selection["MaxPrice"][0]
             selection.pop("MaxPrice")
-        if not price:
+        if bool(price):
             queryDict["Model_Item.Price ($)"] = price
 
         # Other attributes
@@ -108,13 +108,13 @@ class Mongo:
         
         # Price
         price = dict()
-        if "MinPrice" in selection:
-            price["$gte"] = selection["MinPrice"]
+        if bool(selection["MinPrice"]):
+            price["$gte"] = selection["MinPrice"][0]
             selection.pop("MinPrice")
-        if "MaxPrice" in selection:
-            price["$lte"] = selection["MaxPrice"]
+        if bool(selection["MaxPrice"]):
+            price["$lte"] = selection["MaxPrice"][0]
             selection.pop("MaxPrice")
-        if not price:
+        if bool(price):
             queryDict["Model_Item.Price ($)"] = price
 
         # Other attributes
@@ -124,6 +124,9 @@ class Mongo:
                     "$in": 
                         [value[:1].upper() + value[1:] for value in array]
                     }
+
+        # DEBUGGING
+        print(queryDict)
 
         # Perform MongoDB aggregation
         pipeline = [
@@ -247,11 +250,6 @@ class Mongo:
 
 if __name__ == '__main__':
     m = Mongo()
-    print(m.findItem(1009))
-    # print(m.adminSearch({'Model': [], 'Category': [], 'Color': [], 'Factory': [], 'PowerSupply': [], 'ProductionYear': [], 'PurchaseStatus': []}))
-    # print(m.customerSearch({'Model': [], 'Category': [], 'Color': [], 'Factory': [], 'PowerSupply': [], 'ProductionYear': []}))
-    # print(m.customerSearch({"model": [], "category": ["locks"],  "color": ["white"],
-    #                     "productionYear": ["2015"], "factory": [], "powerSupply": ["Battery"]}))
-    # print(m.customerSearch({"model": [], "category": [],  "color": [],
-    #                     "productionYear": [], "factory": [], "powerSupply": []}))
-    # print(m.adminSearch({"model": ["Light1", "Light2", "SmartHome1"]}))
+    # print(m.findItem(1009))
+    # print(m.adminSearch({'Model': [], 'Category': [], 'Color': [], 'Factory': [], 'PowerSupply': [], 'ProductionYear': [], 'PurchaseStatus': [], 'MinPrice': [100], 'MaxPrice': []}))
+    # print(m.customerSearch({'Model': [], 'Category': [], 'Color': [], 'Factory': [], 'PowerSupply': [], 'ProductionYear': [], 'MinPrice': [], 'MaxPrice': [100]}))

@@ -35,6 +35,9 @@ def productSearch():
 
   # Initialize variables and dictionary
   light1val, light2val, safe1val, safe2val, safe3val, smarthome1val, locksval, lightsval, whiteval, blueval, yellowval, greenval, blackval, malaysiaval, chinaval, philippinesval, batteryval, usbval, val2020, val2019, val2017, val2016, val2015, val2014 = (tk.StringVar() for i in range(24))
+  # Integer variables
+  minPrice = tk.IntVar(value=0) # Default value is 0
+  maxPrice = tk.IntVar(value=1000000) # Default value is 1000000
 
   options = {
     'Model': [light1val, light2val, safe1val, safe2val, safe3val, smarthome1val],
@@ -58,7 +61,9 @@ def productSearch():
       'Color': [],
       'Factory': [],
       'PowerSupply': [],
-      'ProductionYear': []
+      'ProductionYear': [],
+      'MinPrice': [],
+      'MaxPrice': [],
     }
 
     for key, value in options.items():  
@@ -67,6 +72,12 @@ def productSearch():
           arr = dict.get(key)
           arr.append(i.get())
           dict[key] = arr
+    
+    ## ADDED PRICE FILTER ##
+    if (minPrice.get() > 0):
+      dict['MinPrice'].append(minPrice.get())
+    if (maxPrice.get() < 1000000):
+      dict['MaxPrice'].append(maxPrice.get())
     
     print(dict) 
     # CALL BACKEND --------------------------
@@ -213,10 +224,10 @@ def productSearch():
     tk.Label(search_frame, text="Production Year", bg="#F9FBF2").grid(sticky="W", row=8, column=5)
     # Production Year Options
     tk.Checkbutton(search_frame, bg="#F9FBF2", text = "2020", variable = val2020, onvalue="2020").grid(sticky="W", row=8, column=6)
-    tk.Checkbutton(search_frame, bg="#F9FBF2", text = "2019", variable = val2019, onvalue="2019").grid(sticky="W", row=8, column=7)
+    tk.Checkbutton(search_frame, bg="#F9FBF2", text = "2019", variable = val2019, onvalue="2019").grid(sticky="W", row=8, column=7, padx=(0,50)) # Added space for styling
     tk.Checkbutton(search_frame, bg="#F9FBF2", text = "2017", variable = val2017, onvalue="2017").grid(sticky="W", row=8, column=8)
     tk.Checkbutton(search_frame, bg="#F9FBF2", text = "2016", variable = val2016, onvalue="2016").grid(sticky="W", row=9, column=6)
-    tk.Checkbutton(search_frame, bg="#F9FBF2", text = "2015", variable = val2015, onvalue="2015").grid(sticky="W", row=9, column=7)
+    tk.Checkbutton(search_frame, bg="#F9FBF2", text = "2015", variable = val2015, onvalue="2015").grid(sticky="E", row=9, column=7, padx=(0,50)) # Added space for styling
     tk.Checkbutton(search_frame, bg="#F9FBF2", text = "2014", variable = val2014, onvalue="2014").grid(sticky="W", row=9, column=8)
 
     tk.Label(search_frame, text="   ", bg="#F9FBF2").grid(row=10, column=0)
@@ -228,6 +239,16 @@ def productSearch():
     tk.Checkbutton(search_frame, bg="#F9FBF2", text = "China", variable = chinaval, onvalue="China").grid(sticky="W", row=11, column=2)
     tk.Checkbutton(search_frame, bg="#F9FBF2", text = "Philippines", variable = philippinesval, onvalue="Philippines").grid(sticky="W", row=11, column=3)
   
+    ## ADDED PRICE FILTER ##
+    # Minimum Price Label
+    tk.Label(search_frame, text="Minimum Price ($)", bg="#F9FBF2").grid(sticky="W", row=11, column=5)
+    # Input Field for Min Price
+    tk.Entry(search_frame, text = "MinPrice", width=10, textvariable= minPrice).grid(sticky="W", row=11, column=6, columnspan=3)
+    # Maximum Price Label
+    tk.Label(search_frame, text="Maximum Price ($)", bg="#F9FBF2").grid(sticky="W", row=12, column=5)
+    # Input Field for Max Price
+    tk.Entry(search_frame, text = "MaxPrice", width=10, textvariable= maxPrice).grid(sticky="W", row=12, column=6, columnspan=3)
+    
   # Simple Search Title
   tk.Label(search_frame, text="Simple Search", bg="#F9FBF2").grid(sticky="W", row=0, column=0)
   
@@ -246,7 +267,7 @@ def productSearch():
   # Search Button
   # global buttonsToDisable 
   # buttonsToDisable = []
-  searchButton = tk.Button(search_frame, text="Search", bg='#fbf2fa', command=onSearch, state=tk.NORMAL).grid(sticky="W", row=15, column=8)
+  searchButton = tk.Button(search_frame, text="Search", bg='#fbf2fa', command=onSearch, state=tk.NORMAL).grid(sticky="W", row=16, column=8)
   # buttonsToDisable.append(searchButton)
 
   # Styling Spaces
