@@ -47,9 +47,9 @@ def adminLogin():
     # GlobalVariables.adminId = 1 #HARDCODED DATA [REMOVE when linking to backend!!]
     if (GlobalVariables.adminId >= 0):
       redirectToAdminHome()
-    elif (not username_verification.get() or not password_verification.get()):
+    # elif (not username_verification.get() or not password_verification.get()):
     # elif (GlobalVariables.adminId == -1):
-    # else:
+    else:
       tk.messagebox.showerror("Login Unsuccessful","Error. Please check Admin ID or password again.")
 
   tk.Button(frame, text = "Log In", bg='#fbf2fa', command = verifyLogin).pack(pady = 15)
