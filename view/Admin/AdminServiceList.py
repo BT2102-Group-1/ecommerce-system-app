@@ -19,27 +19,27 @@ def adminServiceList():
 
   #---------------------CHECK BOXES-------------------#
 
-  def approvedIsChecked():
-    if approvedState.get() == 1:
-        print("Filtering for Approved Request Service")
-    elif approvedState.get() == 0:
-        print("Removed Filtering for Approved Request Service")
+  # def approvedIsChecked():
+  #   if approvedState.get() == 1:
+  #       print("Filtering for Approved Request Service")
+  #   elif approvedState.get() == 0:
+  #       print("Removed Filtering for Approved Request Service")
 
-  tk.Label(frame, text="Filter: ", bg="#F9FBF2").grid(row=0, column=0, sticky="E")
+  # tk.Label(frame, text="Filter: ", bg="#F9FBF2").grid(row=0, column=0, sticky="E")
 
-  approvedState = tk.IntVar()
-  approvedState.set(0)
-  tk.Checkbutton(frame, bg="#F9FBF2", text="Approved", variable=approvedState, onvalue=1, offvalue=0, command=approvedIsChecked).grid(row = 0, column = 1)
+  # approvedState = tk.IntVar()
+  # approvedState.set(0)
+  # tk.Checkbutton(frame, bg="#F9FBF2", text="Approved", variable=approvedState, onvalue=1, offvalue=0, command=approvedIsChecked).grid(row = 0, column = 1)
 
-  def unapprovedIsChecked():
-    if unapprovedState.get() == 1:
-        print("Filtering for Unapproved Request Service")
-    elif unapprovedState.get() == 0:
-        print("Removed Filtering for Unapproved Request Service")
+  # def unapprovedIsChecked():
+  #   if unapprovedState.get() == 1:
+  #       print("Filtering for Unapproved Request Service")
+  #   elif unapprovedState.get() == 0:
+  #       print("Removed Filtering for Unapproved Request Service")
 
-  unapprovedState = tk.IntVar()
-  unapprovedState.set(0)
-  tk.Checkbutton(frame, bg="#F9FBF2", text="Unapproved", variable=unapprovedState, onvalue=1, offvalue=0, command=unapprovedIsChecked).grid(row = 0, column = 2)
+  # unapprovedState = tk.IntVar()
+  # unapprovedState.set(0)
+  # tk.Checkbutton(frame, bg="#F9FBF2", text="Unapproved", variable=unapprovedState, onvalue=1, offvalue=0, command=unapprovedIsChecked).grid(row = 0, column = 2)
 
    #----------------END OF CHECK BOXES--------------#
 
@@ -80,24 +80,6 @@ def adminServiceList():
   tv.heading('Approved', text='Approved', anchor=tk.CENTER)
   tv.heading('Completed', text='Completed', anchor=tk.CENTER)
   tv.bind('<ButtonRelease-1>', selectItem)
-
-  # dicts = [ #HARD CODED DATA, REMOVE DATA and SET IT = controller.requestServices()
-  #   {"serviceId": 1, "itemId": 2, "customerId": 9, "serviceStatus": "Waiting for approval"},
-  #   {"serviceId": 2, "itemId": 2, "customerId": 9, "serviceStatus": "In progress"},
-  #   {"serviceId": 3, "itemId": 2, "customerId": 9, "serviceStatus": "Completed"},
-  #   {"serviceId": 4, "itemId": 2, "customerId": 9, "serviceStatus": "Waiting for approval"},
-  #   {"serviceId": 5, "itemId": 2, "customerId": 9, "serviceStatus": "Waiting for approval"},
-  #   {"serviceId": 6, "itemId": 2, "customerId": 9, "serviceStatus": "Waiting for approval"},
-  #   {"serviceId": 7, "itemId": 2, "customerId": 9, "serviceStatus": "Waiting for approval"},
-  #   {"serviceId": 8, "itemId": 2, "customerId": 9, "serviceStatus": "Waiting for approval"},
-  #   {"serviceId": 9, "itemId": 2, "customerId": 9, "serviceStatus": "Waiting for approval"},
-  #   {"serviceId": 10, "itemId": 2, "customerId": 9, "serviceStatus": "Waiting for approval"},
-  #   {"serviceId": 11, "itemId": 2, "customerId": 9, "serviceStatus": "Waiting for approval"},
-  #   {"serviceId": 12, "itemId": 2, "customerId": 9, "serviceStatus": "Waiting for approval"},
-  #   {"serviceId": 13, "itemId": 2, "customerId": 9, "serviceStatus": "Waiting for approval"},
-  #   {"serviceId": 14, "itemId": 2, "customerId": 9, "serviceStatus": "Waiting for approval"},
-  #   {"serviceId": 15, "itemId": 2, "customerId": 9, "serviceStatus": "Waiting for approval"}
-  # ]
 
   ## CALL BACKEND --------------------------
   # remove hardcoded list of dictionaries above under variable "dicts"

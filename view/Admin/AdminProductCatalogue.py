@@ -91,9 +91,9 @@ def adminProductCatalogue():
 
     count = 4
     for modelDict in productList:     
-      tk.Label(display_frame, bg="#F9FBF2", text="Model: " + modelDict['model'] + ", Category: " + modelDict['category'] + ", Price: " + str(modelDict['price'])).grid(row=count, column=0, columnspan=4)
+      tk.Label(display_frame, bg="#F9FBF2", text="Model: " + modelDict['model'] + ", Category: " + modelDict['category'] + ", Price: $" + str(modelDict['price'])).grid(row=count, column=0, columnspan=4)
       count += 1
-      tk.Label(display_frame, bg="#F9FBF2", text="Cost of Service: $" + str(modelDict['serviceFee']) + ", Warranty: " + str(modelDict['warranty'])).grid(row=count, column=0, columnspan=4)
+      tk.Label(display_frame, bg="#F9FBF2", text="Cost of Service: $" + str(modelDict['serviceFee']) + ", Warranty: " + str(modelDict['warranty']) + " Months").grid(row=count, column=0, columnspan=4)
       count += 1
       tk.Label(display_frame, bg="#F9FBF2", text="Number of Items Sold: " + str(modelDict['numItemsSold']) + ", Number of Items Unsold: " + str(modelDict['numItemsInStock'])).grid(row=count, column=0, columnspan=4)
       count += 1

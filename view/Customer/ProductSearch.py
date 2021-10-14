@@ -136,7 +136,7 @@ def productSearch():
 
     count = 2
     for modelDict in productList:     
-      tk.Label(display_frame, bg="#F9FBF2", text="Model: " + modelDict['model'] + ", Category: " + modelDict['category'] + ", Price: " + str(modelDict['price']) + ", Warranty: " + str(modelDict['warranty'])).grid(row=count, column=0, columnspan=4)
+      tk.Label(display_frame, bg="#F9FBF2", text="Model: " + modelDict['model'] + ", Category: " + modelDict['category'] + ", Price: $" + str(modelDict['price']) + ", Warranty: " + str(modelDict['warranty']) + " Months").grid(row=count, column=0, columnspan=4)
       count += 1
       tk.Label(display_frame, bg="#F9FBF2", text="Number of Items In Stock: " + str(len(modelDict['items']))).grid(row=count, column=0, columnspan=4)
       count += 1
