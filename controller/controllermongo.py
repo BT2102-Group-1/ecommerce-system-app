@@ -20,7 +20,22 @@ class Mongo:
 
     def customerSearch(self, selection):
         queryDict = dict()
+
+        # Only Unsold
         queryDict["PurchaseStatus"] = "Unsold"  # find only Unsold items
+
+        # Price
+        price = dict()
+        if "MinPrice" in selection:
+            price["$gte"] = selection["MinPrice"]
+            selection.pop("MinPrice")
+        if "MaxPrice" in selection:
+            price["$lte"] = selection["MaxPrice"]
+            selection.pop("MaxPrice")
+        if not price:
+            queryDict["Model_Item.Price ($)"] = price
+
+        # Other attributes
         for (key, array) in selection.items():
             if len(array) != 0:
                 queryDict[key[:1].upper() + key[1:]] = { # Make key and value title case, no spaces
@@ -89,7 +104,20 @@ class Mongo:
 
 
     def adminSearch(self, selection):
-        queryDict = {}
+        queryDict = dict()
+        
+        # Price
+        price = dict()
+        if "MinPrice" in selection:
+            price["$gte"] = selection["MinPrice"]
+            selection.pop("MinPrice")
+        if "MaxPrice" in selection:
+            price["$lte"] = selection["MaxPrice"]
+            selection.pop("MaxPrice")
+        if not price:
+            queryDict["Model_Item.Price ($)"] = price
+
+        # Other attributes
         for (key, array) in selection.items():
             if len(array) != 0:
                 queryDict[key[:1].upper() + key[1:]] = { # Make key and value title case, no spaces
