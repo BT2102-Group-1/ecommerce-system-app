@@ -34,7 +34,7 @@ def productSearch():
   display_frame.pack()
 
   # Initialize variables and dictionary
-  light1val, light2val, safe1val, safe2val, safe3val, smarthome1val, locksval, lightsval, whiteval, blueval, yellowval, greenval, blackval, malaysiaval, chinaval, philippinesval, batteryval, usbval, val2020, val2019, val2017, val2016, val2015, val2014 = (tk.StringVar() for i in range(23))
+  light1val, light2val, safe1val, safe2val, safe3val, smarthome1val, locksval, lightsval, whiteval, blueval, yellowval, greenval, blackval, malaysiaval, chinaval, philippinesval, batteryval, usbval, val2020, val2019, val2017, val2016, val2015, val2014 = (tk.StringVar() for i in range(24))
 
   options = {
     'Model': [light1val, light2val, safe1val, safe2val, safe3val, smarthome1val],
