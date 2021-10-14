@@ -84,6 +84,7 @@ def adminServiceList():
   ## CALL BACKEND --------------------------
   # remove hardcoded list of dictionaries above under variable "dicts"
   dicts = Connection().requestServices()
+  print(dicts) # DEBUGGING
   ## ---------------------------------------
 
   for dict in dicts:
@@ -92,11 +93,11 @@ def adminServiceList():
     customerId = dict.get('customerId')
     serviceStatus = dict.get('serviceStatus')
     if serviceStatus == "Waiting for approval":
-      tv.insert(parent='', index=serviceId, iid=serviceId, text='', values=(serviceId, itemId, customerId, serviceStatus, "-", "-")) 
+      tv.insert(parent='', index=len(dicts), iid=serviceId, text='', values=(serviceId, itemId, customerId, serviceStatus, "-", "-")) 
     elif (serviceStatus == "In progress"):
-      tv.insert(parent='', index=serviceId, iid=serviceId, text='', values=(serviceId, itemId, customerId, serviceStatus, "Y", "-")) 
+      tv.insert(parent='', index=len(dicts), iid=serviceId, text='', values=(serviceId, itemId, customerId, serviceStatus, "Y", "-")) 
     elif (serviceStatus == "Completed"):
-      tv.insert(parent='', index=serviceId, iid=serviceId, text='', values=(serviceId, itemId, customerId, serviceStatus, "Y", "Y")) 
+      tv.insert(parent='', index=len(dicts), iid=serviceId, text='', values=(serviceId, itemId, customerId, serviceStatus, "Y", "Y")) 
 
   tv.grid(row = 2, columnspan=6, pady=5)
   # ------------End of Table View -------------------- #

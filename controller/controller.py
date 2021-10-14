@@ -326,7 +326,7 @@ class Connection:
     def requestServices(self):
         return pd.read_sql_query(
             '''SELECT s.serviceId, r.itemId, r.customerId, s.serviceStatus FROM Service AS s INNER JOIN Request AS r ON s.requestId = r.requestId
-            ORDER BY s.serviceId DESC, FIELD(s.serviceStatus,'Waiting for approval', 'In progress', 'Completed')''',
+            ORDER BY FIELD(s.serviceStatus,'Waiting for approval', 'In progress', 'Completed'), s.serviceId DESC''',
             self.connection).to_dict('records')
 
 
@@ -377,9 +377,9 @@ class Connection:
 if __name__ == '__main__':
     db = Connection()
     print(db.engine)
-    print(db.initialiseDatabase())
+    # print(db.initialiseDatabase())
     print(db.requestServices())
-    db.updateDatabase()
+    # db.updateDatabase()
     # print(db.viewInventory())
     # print(db.adminSearch({"model": ["Light1", "Light2", "SmartHome1"]}))
     # print(pd.read_sql('customer', db.connection))
