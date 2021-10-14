@@ -49,16 +49,6 @@ class Mongo:
                     "as": "Model_Item"
                 }
             },
-            # {
-            #   "$lookup": {
-            #       "from": "Product",
-            #       "localField": "Model",
-            #       "foreignField": "Model",
-            #       # "let": { <var_1>: <expression>, …, <var_n>: <expression> },
-            #       "pipeline": [ <pipeline to run> ],
-            #       "as": "Model",
-            #   }
-            # },
             {
                 "$match": queryDict
             },
@@ -66,6 +56,9 @@ class Mongo:
                 "$addFields": {
                     "Unsold": {"$cond": [{"$eq": ["$PurchaseStatus","Unsold"]}, 1, 0]},
                 }
+            },
+            {
+                "$sort": SON([("ItemID", 1)])
             },
             {
                 "$group": {
@@ -134,6 +127,9 @@ class Mongo:
                     "Unsold": {"$cond": [{"$eq": ["$PurchaseStatus","Unsold"]}, 1, 0]},
                     "serviceFee": { "$sum": [40, { "$multiply": [ {"$first": "$Model_Item.Cost ($)"}, 0.2 ] }]}
                 }
+            },
+            {
+                "$sort": SON([("ItemID", 1)])
             },
             {
                 "$group": {

@@ -326,7 +326,7 @@ class Connection:
     def requestServices(self):
         return pd.read_sql_query(
             '''SELECT s.serviceId, r.itemId, r.customerId, s.serviceStatus FROM Service AS s INNER JOIN Request AS r ON s.requestId = r.requestId
-            ORDER BY FIELD(s.serviceStatus,'Waiting for approval', 'In progress', 'Completed'), s.serviceId DESC''',
+            ORDER BY s.serviceId DESC, FIELD(s.serviceStatus,'Waiting for approval', 'In progress', 'Completed')''',
             self.connection).to_dict('records')
 
 
