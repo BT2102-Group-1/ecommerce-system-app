@@ -19,3 +19,13 @@ $ pip install -r requirements.txt
 $ python app.py
 ```
 
+Alternatively, if you wish to use a virtual environment and are accessing through our submission.zip:
+```
+# For MacOS/Linux
+$ source venv/activate/bat
+
+# For Windows
+$ pip install -U virtualenv
+$ virtualenv --system-site-packages -p python ./venv
+$ .\venv\Scripts\activate
+```
