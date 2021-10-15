@@ -1,0 +1,1 @@
+UPDATE Model SET modelWarranty = 0 WHERE productId = 1;
