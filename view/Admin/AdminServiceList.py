@@ -116,7 +116,7 @@ def adminServiceList():
             success = Connection().approveServiceRequest(GlobalVariables.adminId, serviceId)
             
             if not success:
-              tk.messagebox.showerror("Error", "Service fee has not beed paid!")
+              tk.messagebox.showerror("Error", "Service fee has not been paid!")
             else:
               window.destroy()
               adminServiceList()

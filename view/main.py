@@ -22,6 +22,7 @@ def main():
     root.destroy()
     adminLogin()
     
+  tk.Label(text="Welcome to OSHES!", font=("Arial", 25), bg='#f9f9f8', width = 100).place(relx=0.5, rely=0.2, anchor=tk.CENTER)
   tk.Button(text="Customer", bg='#fbf2fa', command = redirectToCustomer, width = 20).place(relx=0.5, rely=0.3, anchor=tk.CENTER)
   tk.Button(text="Admin", bg='#fbf2fa', command = redirectToAdmin, width = 20).place(relx=0.5, rely=0.4, anchor=tk.CENTER)
 
